@@ -1,3 +1,5 @@
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+type IconName = React.ComponentProps<typeof MaterialCommunityIcons>['name'];
 export interface Player {
   id: string;
   name: string;
@@ -13,7 +15,7 @@ export interface Category {
 export interface MenuButtonProps {
   title: string;
   onPress: () => void;
-  iconName?: string;
+  iconName?: IconName;
   disabled?: boolean;
 }
 
@@ -28,3 +30,10 @@ export interface ToggleSwitchProps {
   onValueChange: (value: boolean) => void;
   label: string;
 }
+
+export type AppRoute =
+  | '/new-game'
+  | '/categories'
+  | '/settings'
+  | '/ads'
+  | '/players';
