@@ -26,7 +26,7 @@ export default function HomeScreen() {
         />
         <MenuButton
           title="Players"
-          onPress={() => router.push('/players')} 
+          onPress={() => router.push('/players' as any)} 
           iconName="account-group"
         />
         <MenuButton
