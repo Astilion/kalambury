@@ -6,41 +6,39 @@ import { AppRoute } from '@/types';
 
 export default function HomeScreen() {
   const router = useRouter();
-  
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Kalambury</Text>
       <Text style={styles.subtitle}>Charades Game</Text>
-      
+
       <View style={styles.menuContainer}>
-      <MenuButton
-          title="New Game"
+        <MenuButton
+          title='New Game'
           onPress={() => router.push('/new-game')}
-          iconName="gamepad-variant"
+          iconName='gamepad-variant'
         />
         <MenuButton
-          title="Categories"
+          title='Categories'
           onPress={() => router.push('/categories')}
-          iconName="format-list-bulleted"
+          iconName='format-list-bulleted'
         />
         <MenuButton
-          title="Players"
-          onPress={() => router.push('/players' as any)} 
-          iconName="account-group"
+          title='Players'
+          onPress={() => router.push('/players' as any)}
+          iconName='account-group'
         />
         <MenuButton
-          title="Settings"
+          title='Settings'
           onPress={() => router.push('/settings')}
-          iconName="cog"
+          iconName='cog'
         />
         <MenuButton
-          title="Ads On/Off"
+          title='Ads On/Off'
           onPress={() => router.push('/ads' as any)} // Type assertion as temporary solution
-          iconName="youtube-tv"
+          iconName='youtube-tv'
         />
       </View>
-      
     </View>
   );
 }
@@ -73,5 +71,5 @@ const styles = StyleSheet.create({
     color: '#e53935',
     fontSize: 14,
     textAlign: 'center',
-  }
+  },
 });
