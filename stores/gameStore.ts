@@ -34,20 +34,22 @@ export const useGameStore = create<GameState>()(
       players: [],
       activePlayer: 0,
       isLoading: false,
+
       loadCategories: async () => {
         set({ isLoading: true });
         try {
           const categories = await getCategories();
-          
+
           // If no previously selected categories, select all by default
           set((state) => {
-            const currentSelectedCategories = Object.keys(state.selectedCategories).length > 0
-              ? state.selectedCategories
-              : categories.reduce((acc, category) => {
-                  acc[category.id] = true;
-                  return acc;
-                }, {} as Record<string, boolean>);
-            
+            const currentSelectedCategories =
+              Object.keys(state.selectedCategories).length > 0
+                ? state.selectedCategories
+                : categories.reduce((acc, category) => {
+                    acc[category.id] = true;
+                    return acc;
+                  }, {} as Record<string, boolean>);
+
             return {
               availableCategories: categories,
               selectedCategories: currentSelectedCategories,
@@ -70,30 +72,41 @@ export const useGameStore = create<GameState>()(
         const state = get();
         set({ isLoading: true });
         try {
+          // Log selected categories
           const activeCategories = Object.entries(state.selectedCategories)
             .filter(([_, isSelected]) => isSelected)
             .map(([id]) => id);
-          
+
+          console.log('Active Categories:', activeCategories);
+
           if (activeCategories.length === 0) {
+            console.warn('No categories selected');
             set({ isLoading: false });
             return;
           }
-          
+
           const randomCategoryIndex = Math.floor(
             Math.random() * activeCategories.length,
           );
           const randomCategoryId = activeCategories[randomCategoryIndex];
-          
+
+          console.log('Selected Category ID:', randomCategoryId);
+
           const phrases = await getPhrasesByCategory(randomCategoryId);
-          
+
+          // console.log('Fetched Phrases:', phrases);
+
           if (phrases.length === 0) {
+            console.warn(`No phrases found for category: ${randomCategoryId}`);
             set({ isLoading: false });
             return;
           }
-          
+
           const randomPhraseIndex = Math.floor(Math.random() * phrases.length);
           const randomPhrase = phrases[randomPhraseIndex];
-          
+
+          console.log('Selected Phrase:', randomPhrase);
+
           set({
             currentWord: randomPhrase.text,
             isLoading: false,
@@ -107,7 +120,9 @@ export const useGameStore = create<GameState>()(
         const state = get();
         await state.startNewGame();
         if (state.players.length > 0) {
-          set({ activePlayer: (state.activePlayer + 1) % state.players.length });
+          set({
+            activePlayer: (state.activePlayer + 1) % state.players.length,
+          });
         }
       },
       addPoint: (playerId: string) =>
@@ -136,6 +151,6 @@ export const useGameStore = create<GameState>()(
       partialize: (state) => ({
         selectedCategories: state.selectedCategories,
       }),
-    }
-  )
+    },
+  ),
 );
