@@ -1,6 +1,5 @@
 // stores/gameStore.ts
 import { create } from 'zustand';
-import { CATEGORIES } from '../constants/Categories';
 import { getCategories, getPhrasesByCategory } from '@/utils/db';
 
 export type Player = {

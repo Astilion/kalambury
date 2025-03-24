@@ -9,7 +9,6 @@ export interface Player {
 export interface Category {
   id: string;
   name: string;
-  words: string[];
 }
 
 export interface MenuButtonProps {

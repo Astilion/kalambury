@@ -1,37 +1,67 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, FlatList, Text } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  StyleSheet,
+  FlatList,
+  Text,
+  ActivityIndicator,
+} from 'react-native';
 import { useRouter } from 'expo-router';
 import CategoryItem from '../../components/CategoryItem';
 import MenuButton from '../../components/MenuButton';
-import { CATEGORIES } from '../../constants/Categories';
-import { Category } from '../../types';
 import { useGameStore } from '../../stores/gameStore';
 
 export default function CategoriesScreen() {
   const router = useRouter();
-  const [categories] = useState<Category[]>(CATEGORIES);
-  const { selectedCategories, toggleCategory } = useGameStore();
+  const {
+    selectedCategories,
+    availableCategories,
+    toggleCategory,
+    loadCategories,
+    isLoading,
+  } = useGameStore();
+
+  // Load categories when component mounts
+  useEffect(() => {
+    loadCategories();
+  }, []);
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Select Categories</Text>
-      <FlatList
-        data={categories}
-        renderItem={({ item }) => (
-          <CategoryItem
-            category={item}
-            selected={selectedCategories[item.id]}
-            onToggle={() => toggleCategory(item.id)}
-          />
-        )}
-        keyExtractor={(item) => item.id}
-        style={styles.list}
-      />
-      <MenuButton
-        title='Save Categories'
-        onPress={() => router.back()}
-        iconName='content-save'
-      />
+
+      {isLoading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size='large' color='#0000ff' />
+          <Text style={styles.loadingText}>Loading categories...</Text>
+        </View>
+      ) : (
+        <FlatList
+          data={availableCategories}
+          renderItem={({ item }) => (
+            <CategoryItem
+              category={item}
+              selected={selectedCategories[item.id] || false}
+              onToggle={() => toggleCategory(item.id)}
+            />
+          )}
+          keyExtractor={(item) => item.id}
+          style={styles.list}
+          ListEmptyComponent={
+            <Text style={styles.emptyText}>
+              No categories found. Add some categories first!
+            </Text>
+          }
+        />
+      )}
+
+      <View style={styles.buttonContainer}>
+        <MenuButton
+          title='Save Categories'
+          onPress={() => router.back()}
+          iconName='content-save'
+        />
+      </View>
     </View>
   );
 }
@@ -49,5 +79,23 @@ const styles = StyleSheet.create({
   },
   list: {
     flex: 1,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+  },
+  emptyText: {
+    textAlign: 'center',
+    fontSize: 16,
+    marginTop: 20,
+  },
+  buttonContainer: {
+    marginTop: 10,
+    gap: 10,
   },
 });
