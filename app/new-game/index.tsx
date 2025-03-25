@@ -23,7 +23,7 @@ export default function NewGameScreen() {
         {currentWord ? (
           <Text style={styles.word}>{currentWord}</Text>
         ) : (
-          <Text style={styles.noWord}>No categories selected!</Text>
+          <Text style={styles.noWord}>Nie wybrano kategorii!</Text>
         )}
       </View>
       
