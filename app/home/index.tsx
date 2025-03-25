@@ -1,21 +1,29 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import { useRouter } from 'expo-router';
 import MenuButton from '../../components/MenuButton';
+import { useGameStore } from '@/stores/gameStore';
 import { AppRoute } from '@/types';
 
 export default function HomeScreen() {
   const router = useRouter();
+  const { loadCategories, areCategoriesSelected } = useGameStore();
+
+  useEffect(() => {
+    loadCategories();
+  }, []);
+
+  const isCategoriesSelected = areCategoriesSelected();
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Kalambury</Text>
-
       <View style={styles.menuContainer}>
         <MenuButton
           title='Nowa Gra'
           onPress={() => router.push('/new-game')}
           iconName='gamepad-variant'
+          disabled={!isCategoriesSelected}
         />
         <MenuButton
           title='Wybór Kategorii'
@@ -34,10 +42,15 @@ export default function HomeScreen() {
         />
         <MenuButton
           title='Reklamy On/Off'
-          onPress={() => router.push('/ads' as any)} // Type assertion as temporary solution
+          onPress={() => router.push('/ads' as any)}
           iconName='youtube-tv'
         />
       </View>
+      {!isCategoriesSelected && (
+        <Text style={styles.warning}>
+          Wybierz przynajmniej jedną kategorię, aby rozpocząć grę
+        </Text>
+      )}
     </View>
   );
 }
@@ -53,11 +66,6 @@ const styles = StyleSheet.create({
     fontSize: 42,
     fontWeight: 'bold',
     color: '#f4511e',
-    marginBottom: 40,
-  },
-  subtitle: {
-    fontSize: 20,
-    color: '#666',
     marginBottom: 40,
   },
   menuContainer: {

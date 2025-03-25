@@ -23,6 +23,7 @@ interface GameState {
   addPoint: (playerId: string) => void;
   addPlayer: (name: string) => void;
   removePlayer: (id: string) => void;
+  areCategoriesSelected: () => boolean;
 }
 
 export const useGameStore = create<GameState>()(
@@ -68,6 +69,13 @@ export const useGameStore = create<GameState>()(
             [categoryId]: !state.selectedCategories[categoryId],
           },
         })),
+      areCategoriesSelected: () => {
+        const state = get();
+        return Object.values(state.selectedCategories).some(
+          (selected) => selected,
+        );
+      },
+
       startNewGame: async () => {
         const state = get();
         set({ isLoading: true });

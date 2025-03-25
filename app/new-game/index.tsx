@@ -8,17 +8,17 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 export default function NewGameScreen() {
   const router = useRouter();
   const { currentWord, startNewGame, nextWord } = useGameStore();
-  
+
   useEffect(() => {
     startNewGame();
   }, []);
-  
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Twoje Hasło</Text>
       </View>
-      
+
       <View style={styles.wordContainer}>
         {currentWord ? (
           <Text style={styles.word}>{currentWord}</Text>
@@ -26,21 +26,21 @@ export default function NewGameScreen() {
           <Text style={styles.noWord}>Nie wybrano kategorii!</Text>
         )}
       </View>
-      
+
       <View style={styles.actionsContainer}>
-        <TouchableOpacity 
-          style={[styles.button, styles.nextButton]} 
+        <TouchableOpacity
+          style={[styles.button, styles.nextButton]}
           onPress={nextWord}
         >
-          <MaterialCommunityIcons name="refresh" size={24} color="white" />
+          <MaterialCommunityIcons name='refresh' size={24} color='white' />
           <Text style={styles.buttonText}>Następne Hasło</Text>
         </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={[styles.button, styles.backButton]} 
+
+        <TouchableOpacity
+          style={[styles.button, styles.backButton]}
           onPress={() => router.back()}
         >
-          <MaterialCommunityIcons name="close" size={24} color="white" />
+          <MaterialCommunityIcons name='close' size={24} color='white' />
           <Text style={styles.buttonText}>Zakończ Grę</Text>
         </TouchableOpacity>
       </View>
