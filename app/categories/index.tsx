@@ -28,12 +28,12 @@ export default function CategoriesScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Select Categories</Text>
+      <Text style={styles.title}>Wybierz Kategorie</Text>
 
       {isLoading ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size='large' color='#0000ff' />
-          <Text style={styles.loadingText}>Loading categories...</Text>
+          <Text style={styles.loadingText}>Ładowanie...</Text>
         </View>
       ) : (
         <FlatList
@@ -57,7 +57,7 @@ export default function CategoriesScreen() {
 
       <View style={styles.buttonContainer}>
         <MenuButton
-          title='Save Categories'
+          title='Zapisz'
           onPress={() => router.back()}
           iconName='content-save'
         />
@@ -76,6 +76,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 20,
+    marginTop: 60,
+    color: '#f4511e',
   },
   list: {
     flex: 1,
@@ -95,6 +97,8 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   buttonContainer: {
+    flex: 1,
+    alignItems: 'center',
     marginTop: 10,
     gap: 10,
   },

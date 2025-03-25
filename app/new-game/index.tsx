@@ -16,7 +16,7 @@ export default function NewGameScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Your Word</Text>
+        <Text style={styles.title}>Twoje Hasło</Text>
       </View>
       
       <View style={styles.wordContainer}>
@@ -33,7 +33,7 @@ export default function NewGameScreen() {
           onPress={nextWord}
         >
           <MaterialCommunityIcons name="refresh" size={24} color="white" />
-          <Text style={styles.buttonText}>Next Word</Text>
+          <Text style={styles.buttonText}>Następne Hasło</Text>
         </TouchableOpacity>
         
         <TouchableOpacity 
@@ -41,7 +41,7 @@ export default function NewGameScreen() {
           onPress={() => router.back()}
         >
           <MaterialCommunityIcons name="close" size={24} color="white" />
-          <Text style={styles.buttonText}>End Game</Text>
+          <Text style={styles.buttonText}>Zakończ Grę</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -56,8 +56,8 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: 'center',
-    marginBottom: 40,
-    marginTop: 20,
+    marginVertical: 40,
+    marginTop: 60,
   },
   title: {
     fontSize: 28,
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     color: '#f4511e',
   },
   wordContainer: {
-    flex: 1,
+    flex: 0.5,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F5F5F5',
