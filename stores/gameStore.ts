@@ -19,10 +19,11 @@ interface GameState {
   loadCategories: () => Promise<void>;
   toggleCategory: (categoryId: string) => void;
   startNewGame: () => Promise<void>;
-  nextWord: () => Promise<void>;
+  nextWord: (guessingPlayerId?: string | null) => Promise<void>;
   addPoint: (playerId: string) => void;
   addPlayer: (name: string) => void;
   removePlayer: (id: string) => void;
+  resetScores: () => void;
   areCategoriesSelected: () => boolean;
 }
 
@@ -124,13 +125,40 @@ export const useGameStore = create<GameState>()(
           set({ isLoading: false });
         }
       },
-      nextWord: async () => {
+      nextWord: async (guessingPlayerId?: string | null) => {
         const state = get();
         await state.startNewGame();
-        if (state.players.length > 0) {
-          set({
-            activePlayer: (state.activePlayer + 1) % state.players.length,
-          });
+
+        if (state.players.length <= 1) {
+          // If only one player or no players, just keep the same player
+          return;
+        }
+
+        if (guessingPlayerId) {
+          // If someone guessed correctly, find their index to make them the next player
+          const guessingPlayerIndex = state.players.findIndex(
+            (player) => player.id === guessingPlayerId,
+          );
+          if (guessingPlayerIndex !== -1) {
+            set({ activePlayer: guessingPlayerIndex });
+            return;
+          }
+        }
+
+        // No one guessed correctly or guessingPlayerId not found
+        // Choose a random player, but exclude the current one
+        const currentPlayerIndex = state.activePlayer;
+        const otherPlayerIndices = Array.from(
+          { length: state.players.length },
+          (_, i) => i,
+        ).filter((i) => i !== currentPlayerIndex);
+
+        if (otherPlayerIndices.length > 0) {
+          const randomIndex = Math.floor(
+            Math.random() * otherPlayerIndices.length,
+          );
+          const nextPlayerIndex = otherPlayerIndices[randomIndex];
+          set({ activePlayer: nextPlayerIndex });
         }
       },
       addPoint: (playerId: string) =>
@@ -151,6 +179,17 @@ export const useGameStore = create<GameState>()(
       removePlayer: (id: string) =>
         set((state) => ({
           players: state.players.filter((player) => player.id !== id),
+          // Reset active player if the current active player is removed
+          activePlayer:
+            state.players.findIndex((p) => p.id === id) === state.activePlayer
+              ? 0
+              : state.activePlayer >= state.players.length - 1
+              ? 0
+              : state.activePlayer,
+        })),
+      resetScores: () =>
+        set((state) => ({
+          players: state.players.map((player) => ({ ...player, score: 0 })),
         })),
     }),
     {
@@ -158,6 +197,7 @@ export const useGameStore = create<GameState>()(
       storage: createJSONStorage(() => AsyncStorage),
       partialize: (state) => ({
         selectedCategories: state.selectedCategories,
+        players: state.players, // Add players to persisted state
       }),
     },
   ),
