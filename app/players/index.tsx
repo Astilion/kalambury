@@ -95,6 +95,13 @@ export default function PlayersSelectionScreen() {
           <MaterialCommunityIcons name='play' size={24} color='white' />
           <Text style={styles.buttonText}>Rozpocznij grę</Text>
         </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.button, styles.backButton]}
+          onPress={() => router.push('/home')}
+        >
+          <MaterialCommunityIcons name='close' size={24} color='white' />
+          <Text style={styles.buttonText}>Wyjście</Text>
+        </TouchableOpacity>
         {players.length > 0 && (
           <TouchableOpacity
             style={[styles.button, styles.resetButton]}
@@ -179,7 +186,9 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
   bottomActions: {
-    marginTop: 20,
+    flexDirection: 'column',
+    gap: 15,
+    marginVertical: 20,
   },
   button: {
     flexDirection: 'row',
@@ -200,5 +209,8 @@ const styles = StyleSheet.create({
   resetButton: {
     backgroundColor: '#FF9800',
     marginTop: 10,
+  },
+  backButton: {
+    backgroundColor: '#F44336',
   },
 });
