@@ -7,13 +7,16 @@ import { AppRoute } from '@/types';
 
 export default function HomeScreen() {
   const router = useRouter();
-  const { loadCategories, areCategoriesSelected } = useGameStore();
+  const { loadCategories, areCategoriesSelected, players } = useGameStore();
 
   useEffect(() => {
     loadCategories();
   }, []);
 
   const isCategoriesSelected = areCategoriesSelected();
+  const hasEnoughPlayers = players.length >= 2;
+
+  const isNewGameDisabled = !isCategoriesSelected || !hasEnoughPlayers;
 
   return (
     <View style={styles.container}>
@@ -28,7 +31,7 @@ export default function HomeScreen() {
           title='Nowa Gra'
           onPress={() => router.push('/new-game')}
           iconName='gamepad-variant'
-          disabled={!isCategoriesSelected}
+          disabled={isNewGameDisabled}
         />
         <MenuButton
           title='Wybór Kategorii'
@@ -54,6 +57,11 @@ export default function HomeScreen() {
       {!isCategoriesSelected && (
         <Text style={styles.warning}>
           Wybierz przynajmniej jedną kategorię, aby rozpocząć grę
+        </Text>
+      )}
+      {!hasEnoughPlayers && (
+        <Text style={styles.warning}>
+          Dodaj przynajmniej dwóch graczy, aby rozpocząć grę
         </Text>
       )}
     </View>
