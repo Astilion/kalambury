@@ -16,10 +16,12 @@ interface GameState {
   players: Player[];
   activePlayer: number;
   isLoading: boolean;
+  wordChangesRemaining: number; // Track remaining word changes
   loadCategories: () => Promise<void>;
   toggleCategory: (categoryId: string) => void;
   startNewGame: () => Promise<void>;
   nextWord: (guessingPlayerId?: string | null) => Promise<void>;
+  changeWord: () => Promise<void>; // New function to change word without changing player
   addPoint: (playerId: string) => void;
   addPlayer: (name: string) => void;
   removePlayer: (id: string) => void;
@@ -36,6 +38,7 @@ export const useGameStore = create<GameState>()(
       players: [],
       activePlayer: 0,
       isLoading: false,
+      wordChangesRemaining: 3, // Default 3 changes per turn
 
       loadCategories: async () => {
         set({ isLoading: true });
@@ -119,12 +122,59 @@ export const useGameStore = create<GameState>()(
           set({
             currentWord: randomPhrase.text,
             isLoading: false,
+            wordChangesRemaining: 3, // Reset word changes for the new round
           });
         } catch (error) {
           console.error('Error starting new game:', error);
           set({ isLoading: false });
         }
       },
+
+      // New function to change word without changing player
+      changeWord: async () => {
+        const state = get();
+
+        // Don't do anything if no more changes are allowed
+        if (state.wordChangesRemaining <= 0) return;
+
+        set({ isLoading: true });
+
+        try {
+          const activeCategories = Object.entries(state.selectedCategories)
+            .filter(([_, isSelected]) => isSelected)
+            .map(([id]) => id);
+
+          if (activeCategories.length === 0) {
+            set({ isLoading: false });
+            return;
+          }
+
+          const randomCategoryIndex = Math.floor(
+            Math.random() * activeCategories.length,
+          );
+          const randomCategoryId = activeCategories[randomCategoryIndex];
+
+          const phrases = await getPhrasesByCategory(randomCategoryId);
+
+          if (phrases.length === 0) {
+            set({ isLoading: false });
+            return;
+          }
+
+          const randomPhraseIndex = Math.floor(Math.random() * phrases.length);
+          const randomPhrase = phrases[randomPhraseIndex];
+
+          set((state) => ({
+            currentWord: randomPhrase.text,
+            isLoading: false,
+            wordChangesRemaining: state.wordChangesRemaining - 1, // Decrement remaining changes
+          }));
+        } catch (error) {
+          console.error('Error changing word:', error);
+          set({ isLoading: false });
+        }
+      },
+
       nextWord: async (guessingPlayerId?: string | null) => {
         const state = get();
         await state.startNewGame();

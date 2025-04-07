@@ -13,6 +13,8 @@ export default function NewGameScreen() {
     players,
     activePlayer,
     addPoint,
+    changeWord,
+    wordChangesRemaining,
   } = useGameStore();
 
   const [showScore, setShowScore] = useState(false);
@@ -24,6 +26,10 @@ export default function NewGameScreen() {
   const handleNextWord = () => {
     setShowScore(false);
     nextWord();
+  };
+
+  const handleChangeWord = () => {
+    changeWord();
   };
 
   const handleEndRound = () => {
@@ -50,7 +56,14 @@ export default function NewGameScreen() {
 
       <View style={styles.wordContainer}>
         {currentWord ? (
-          <Text style={styles.word}>{currentWord}</Text>
+          <>
+            <Text style={styles.word}>{currentWord}</Text>
+            {!showScore && (
+              <Text style={styles.changesRemaining}>
+                Pozostałe zmiany: {wordChangesRemaining}
+              </Text>
+            )}
+          </>
         ) : (
           <Text style={styles.noWord}>Nie wybrano kategorii!</Text>
         )}
@@ -67,11 +80,27 @@ export default function NewGameScreen() {
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[styles.button, styles.nextButton]}
-            onPress={handleNextWord}
+            style={[
+              styles.button,
+              styles.changeWordButton,
+              wordChangesRemaining <= 0 && styles.disabledButton,
+            ]}
+            onPress={handleChangeWord}
+            disabled={wordChangesRemaining <= 0}
           >
-            <MaterialCommunityIcons name='refresh' size={24} color='white' />
-            <Text style={styles.buttonText}>Następne Hasło</Text>
+            <MaterialCommunityIcons
+              name='swap-horizontal'
+              size={24}
+              color={wordChangesRemaining > 0 ? 'white' : '#aaa'}
+            />
+            <Text
+              style={[
+                styles.buttonText,
+                wordChangesRemaining <= 0 && styles.disabledButtonText,
+              ]}
+            >
+              Zmień Hasło ({wordChangesRemaining})
+            </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -172,6 +201,11 @@ const styles = StyleSheet.create({
     color: '#333',
     textAlign: 'center',
   },
+  changesRemaining: {
+    marginTop: 10,
+    fontSize: 16,
+    color: '#666',
+  },
   noWord: {
     fontSize: 20,
     color: '#999',
@@ -198,6 +232,15 @@ const styles = StyleSheet.create({
   },
   endRoundButton: {
     backgroundColor: '#FFC107',
+  },
+  changeWordButton: {
+    backgroundColor: '#FF9800',
+  },
+  disabledButton: {
+    backgroundColor: '#E0E0E0',
+  },
+  disabledButtonText: {
+    color: '#aaa',
   },
   buttonText: {
     color: 'white',
