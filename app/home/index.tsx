@@ -20,6 +20,11 @@ export default function HomeScreen() {
       <Text style={styles.title}>Kalambury</Text>
       <View style={styles.menuContainer}>
         <MenuButton
+          title='Szybka Gra'
+          onPress={() => router.push('/swiftplay')}
+          iconName='lightning-bolt-outline'
+        />
+        <MenuButton
           title='Nowa Gra'
           onPress={() => router.push('/new-game')}
           iconName='gamepad-variant'
