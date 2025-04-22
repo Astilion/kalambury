@@ -133,21 +133,23 @@ export default function NewGameScreen() {
 
           {players.length > 0 ? (
             <View style={styles.playerButtons}>
-              {players.map((player) => (
-                <TouchableOpacity
-                  key={player.id}
-                  style={styles.playerScoreButton}
-                  onPress={() => {
-                    addPoint(player.id);
-                    nextWord(player.id);
-                    setShowScore(false);
-                  }}
-                >
-                  <Text style={styles.playerScoreButtonText}>
-                    {player.name} (+1)
-                  </Text>
-                </TouchableOpacity>
-              ))}
+              {players
+                .filter((player) => player.id !== currentPlayer?.id)
+                .map((player) => (
+                  <TouchableOpacity
+                    key={player.id}
+                    style={styles.playerScoreButton}
+                    onPress={() => {
+                      addPoint(player.id);
+                      nextWord(player.id);
+                      setShowScore(false);
+                    }}
+                  >
+                    <Text style={styles.playerScoreButtonText}>
+                      {player.name} (+1)
+                    </Text>
+                  </TouchableOpacity>
+                ))}
             </View>
           ) : (
             <Text style={styles.noPlayers}>Brak graczy</Text>
