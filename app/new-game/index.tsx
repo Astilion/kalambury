@@ -29,7 +29,12 @@ export default function NewGameScreen() {
   };
 
   const handleChangeWord = () => {
-    changeWord();
+    if (wordChangesRemaining > 0) {
+      changeWord();
+    } else {
+      nextWord(null);
+      setShowScore(false);
+    }
   };
 
   const handleEndRound = () => {
@@ -86,10 +91,11 @@ export default function NewGameScreen() {
               wordChangesRemaining <= 0 && styles.disabledButton,
             ]}
             onPress={handleChangeWord}
-            disabled={wordChangesRemaining <= 0}
           >
             <MaterialCommunityIcons
-              name='swap-horizontal'
+              name={
+                wordChangesRemaining > 0 ? 'swap-horizontal' : 'flag-outline'
+              }
               size={24}
               color={wordChangesRemaining > 0 ? 'white' : '#aaa'}
             />
@@ -99,7 +105,9 @@ export default function NewGameScreen() {
                 wordChangesRemaining <= 0 && styles.disabledButtonText,
               ]}
             >
-              Zmień Hasło ({wordChangesRemaining})
+              {wordChangesRemaining > 0
+                ? `Zmień Hasło (${wordChangesRemaining})`
+                : 'Poddaj się'}
             </Text>
           </TouchableOpacity>
 
@@ -237,10 +245,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#FF9800',
   },
   disabledButton: {
-    backgroundColor: '#E0E0E0',
+    backgroundColor: '#D32F2F',
   },
   disabledButtonText: {
-    color: '#aaa',
+    color: 'white',
   },
   buttonText: {
     color: 'white',
