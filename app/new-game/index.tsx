@@ -97,7 +97,7 @@ export default function NewGameScreen() {
                 wordChangesRemaining > 0 ? 'swap-horizontal' : 'flag-outline'
               }
               size={24}
-              color={wordChangesRemaining > 0 ? 'white' : '#aaa'}
+              color={'white'}
             />
             <Text
               style={[
