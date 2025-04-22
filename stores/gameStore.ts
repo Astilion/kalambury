@@ -86,9 +86,24 @@ export const useGameStore = create<GameState>()(
         const state = get();
         set({ isLoading: true });
         try {
-          const activeCategories = Object.entries(state.selectedCategories)
+          let activeCategories = Object.entries(state.selectedCategories)
             .filter(([_, isSelected]) => isSelected)
             .map(([id]) => id);
+
+          // If no categories selected, select all
+          if (activeCategories.length === 0) {
+            const allCategories = state.availableCategories.map(
+              (cat) => cat.id,
+            );
+            activeCategories = allCategories;
+
+            set((prevState) => ({
+              selectedCategories: allCategories.reduce((acc, id) => {
+                acc[id] = true;
+                return acc;
+              }, {} as Record<string, boolean>),
+            }));
+          }
 
           console.log('Active Categories:', activeCategories);
 
