@@ -9,6 +9,11 @@ export type Player = {
   score: number;
 };
 
+export type CategoryOption = {
+  id: string;
+  name: string;
+};
+
 interface GameState {
   selectedCategories: Record<string, boolean>;
   availableCategories: { id: string; name: string }[];
@@ -17,17 +22,22 @@ interface GameState {
   activePlayer: number;
   isLoading: boolean;
   wordChangesRemaining: number;
+  categoryOptions: CategoryOption[];
+  selectedCategoryId: string | null;
+
   loadCategories: () => Promise<void>;
   toggleCategory: (categoryId: string) => void;
   startNewGame: () => Promise<void>;
   nextWord: (guessingPlayerId?: string | null) => Promise<void>;
   changeWord: () => Promise<void>;
-  getRandomWord: () => Promise<void>; // New function for Swift Play mode
+  getRandomWord: () => Promise<void>;
   addPoint: (playerId: string) => void;
   addPlayer: (name: string) => void;
   removePlayer: (id: string) => void;
   resetScores: () => void;
   areCategoriesSelected: () => boolean;
+  generateCategoryOptions: () => void;
+  selectCategory: (categoryId: string) => Promise<void>;
 }
 
 export const useGameStore = create<GameState>()(
@@ -40,6 +50,9 @@ export const useGameStore = create<GameState>()(
       activePlayer: 0,
       isLoading: false,
       wordChangesRemaining: 3,
+      // Initialize new state variables
+      categoryOptions: [],
+      selectedCategoryId: null,
 
       loadCategories: async () => {
         set({ isLoading: true });
@@ -81,7 +94,124 @@ export const useGameStore = create<GameState>()(
         );
       },
 
-      // Gets a random word - core function used by other modes
+      // Generate two random category options for the player to choose from
+      generateCategoryOptions: () => {
+        const state = get();
+
+        // Get active categories
+        let activeCategories = state.availableCategories
+          .filter((cat) => state.selectedCategories[cat.id])
+          .map((cat) => ({ id: cat.id, name: cat.name }));
+
+        // If no categories selected, use all categories
+        if (activeCategories.length === 0) {
+          activeCategories = state.availableCategories;
+
+          set((prevState) => ({
+            selectedCategories: state.availableCategories.reduce((acc, cat) => {
+              acc[cat.id] = true;
+              return acc;
+            }, {} as Record<string, boolean>),
+          }));
+        }
+
+        // If we have only one category, just use that one
+        if (activeCategories.length === 1) {
+          set({
+            categoryOptions: activeCategories,
+            selectedCategoryId: null,
+          });
+          return;
+        }
+
+        // Choose two random categories
+        const shuffled = [...activeCategories].sort(() => 0.5 - Math.random());
+        const options = shuffled.slice(0, 2);
+
+        set({
+          categoryOptions: options,
+          selectedCategoryId: null,
+        });
+      },
+
+      // Select a category and fetch a word from it
+      selectCategory: async (categoryId: string) => {
+        set({
+          selectedCategoryId: categoryId,
+          isLoading: true,
+        });
+
+        try {
+          const phrases = await getPhrasesByCategory(categoryId);
+
+          if (phrases.length === 0) {
+            console.warn(`No phrases found for category: ${categoryId}`);
+            set({ isLoading: false });
+            return;
+          }
+
+          const randomPhraseIndex = Math.floor(Math.random() * phrases.length);
+          const randomPhrase = phrases[randomPhraseIndex];
+
+          set({
+            currentWord: randomPhrase.text,
+            isLoading: false,
+            wordChangesRemaining: 3, // Reset word changes when selecting a new category
+          });
+        } catch (error) {
+          console.error('Error selecting category:', error);
+          set({ isLoading: false });
+        }
+      },
+
+      // Updated to use the selected category when changing word
+      changeWord: async () => {
+        const state = get();
+
+        // Don't do anything if no more changes are allowed
+        if (state.wordChangesRemaining <= 0) return;
+
+        set({ isLoading: true });
+
+        try {
+          // If a category is selected, use that category for new word
+          if (state.selectedCategoryId) {
+            const phrases = await getPhrasesByCategory(
+              state.selectedCategoryId,
+            );
+
+            if (phrases.length === 0) {
+              console.warn(
+                `No phrases found for category: ${state.selectedCategoryId}`,
+              );
+              set({ isLoading: false });
+              return;
+            }
+
+            const randomPhraseIndex = Math.floor(
+              Math.random() * phrases.length,
+            );
+            const randomPhrase = phrases[randomPhraseIndex];
+
+            set({
+              currentWord: randomPhrase.text,
+              isLoading: false,
+              wordChangesRemaining: state.wordChangesRemaining - 1,
+            });
+          } else {
+            // Fall back to old behavior if no category selected
+            await get().getRandomWord();
+            set((state) => ({
+              wordChangesRemaining: state.wordChangesRemaining - 1,
+            }));
+          }
+        } catch (error) {
+          console.error('Error changing word:', error);
+          set({ isLoading: false });
+        }
+      },
+
+      // Gets a random word when no category is specifically selected
       getRandomWord: async () => {
         const state = get();
         set({ isLoading: true });
@@ -144,25 +274,18 @@ export const useGameStore = create<GameState>()(
       },
 
       startNewGame: async () => {
-        await get().getRandomWord();
-        set({ wordChangesRemaining: 3 }); // Reset word changes for the new round
-      },
-
-      // Function to change word without changing player
-      changeWord: async () => {
-        const state = get();
-
-        // Don't do anything if no more changes are allowed
-        if (state.wordChangesRemaining <= 0) return;
-
-        await get().getRandomWord();
-        set((state) => ({
-          wordChangesRemaining: state.wordChangesRemaining - 1, // Decrement remaining changes
-        }));
+        // Instead of getting a random word, generate category options
+        get().generateCategoryOptions();
+        set({
+          wordChangesRemaining: 3,
+          currentWord: null, // Clear current word until a category is selected
+          selectedCategoryId: null,
+        });
       },
 
       nextWord: async (guessingPlayerId?: string | null) => {
         const state = get();
+        // Start a new game (generate new category options)
         await state.startNewGame();
 
         if (state.players.length <= 1) {
@@ -197,6 +320,7 @@ export const useGameStore = create<GameState>()(
           set({ activePlayer: nextPlayerIndex });
         }
       },
+
       addPoint: (playerId: string) =>
         set((state) => ({
           players: state.players.map((player) =>

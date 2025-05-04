@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Alert,
+  ActivityIndicator,
+} from 'react-native';
 import { useRouter } from 'expo-router';
 import { useGameStore } from '@/stores/gameStore';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -15,18 +22,19 @@ export default function NewGameScreen() {
     addPoint,
     changeWord,
     wordChangesRemaining,
+    categoryOptions,
+    selectedCategoryId,
+    selectCategory,
+    isLoading,
   } = useGameStore();
 
   const [showScore, setShowScore] = useState(false);
+  const [categorySelectionStep, setCategorySelectionStep] = useState(true);
 
   useEffect(() => {
     startNewGame();
+    setCategorySelectionStep(true);
   }, []);
-
-  const handleNextWord = () => {
-    setShowScore(false);
-    nextWord();
-  };
 
   const handleChangeWord = () => {
     if (wordChangesRemaining > 0) {
@@ -34,11 +42,17 @@ export default function NewGameScreen() {
     } else {
       nextWord(null);
       setShowScore(false);
+      setCategorySelectionStep(true);
     }
   };
 
   const handleEndRound = () => {
     setShowScore(true);
+  };
+
+  const handleCategorySelect = async (categoryId: string) => {
+    await selectCategory(categoryId);
+    setCategorySelectionStep(false); // Move to word display after category selection
   };
 
   const getCurrentPlayer = () => {
@@ -48,6 +62,59 @@ export default function NewGameScreen() {
 
   const currentPlayer = getCurrentPlayer();
 
+  // Category selection UI
+  if (categorySelectionStep) {
+    return (
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.title}>Wybierz Kategorię</Text>
+          {currentPlayer && (
+            <Text style={styles.currentPlayer}>
+              Gracz: <Text style={styles.playerName}>{currentPlayer.name}</Text>
+            </Text>
+          )}
+        </View>
+
+        {isLoading ? (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size='large' color='#f4511e' />
+            <Text style={styles.loadingText}>Wczytywanie kategorii...</Text>
+          </View>
+        ) : (
+          <View style={styles.categoryContainer}>
+            <Text style={styles.categoryPrompt}>
+              Wybierz jedną z kategorii:
+            </Text>
+            {categoryOptions.map((category) => (
+              <TouchableOpacity
+                key={category.id}
+                style={styles.categoryButton}
+                onPress={() => handleCategorySelect(category.id)}
+              >
+                <Text style={styles.categoryButtonText}>{category.name}</Text>
+              </TouchableOpacity>
+            ))}
+
+            {categoryOptions.length === 0 && (
+              <Text style={styles.noCategories}>
+                Brak dostępnych kategorii. Sprawdź ustawienia.
+              </Text>
+            )}
+          </View>
+        )}
+
+        <TouchableOpacity
+          style={[styles.button, styles.backButton]}
+          onPress={() => router.push('/home')}
+        >
+          <MaterialCommunityIcons name='close' size={24} color='white' />
+          <Text style={styles.buttonText}>Zakończ Grę</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  // Word display and guessing UI (original game flow)
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -143,6 +210,7 @@ export default function NewGameScreen() {
                       addPoint(player.id);
                       nextWord(player.id);
                       setShowScore(false);
+                      setCategorySelectionStep(true);
                     }}
                   >
                     <Text style={styles.playerScoreButtonText}>
@@ -160,6 +228,7 @@ export default function NewGameScreen() {
             onPress={() => {
               nextWord(null);
               setShowScore(false);
+              setCategorySelectionStep(true);
             }}
           >
             <MaterialCommunityIcons name='skip-next' size={24} color='white' />
@@ -295,5 +364,45 @@ const styles = StyleSheet.create({
   },
   scoreboardButton: {
     backgroundColor: '#2196F3',
+  },
+  categoryContainer: {
+    flex: 0.7,
+    padding: 20,
+  },
+  categoryPrompt: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 20,
+    color: '#333',
+  },
+  categoryButton: {
+    backgroundColor: '#2196F3',
+    paddingVertical: 20,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginBottom: 15,
+  },
+  categoryButtonText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  noCategories: {
+    textAlign: 'center',
+    fontSize: 16,
+    color: '#999',
+    marginTop: 30,
+  },
+  loadingContainer: {
+    flex: 0.7,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: '#666',
   },
 });
