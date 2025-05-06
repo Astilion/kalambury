@@ -148,7 +148,7 @@ export default function NewGameScreen() {
             onPress={handleEndRound}
           >
             <MaterialCommunityIcons name='check' size={24} color='white' />
-            <Text style={styles.buttonText}>Zakończ rundę</Text>
+            <Text style={styles.buttonText}>Zakończ Rundę</Text>
           </TouchableOpacity>
 
           <TouchableOpacity

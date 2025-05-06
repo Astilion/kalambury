@@ -27,7 +27,7 @@ export default function SwiftPlayScreen() {
         {currentWord ? (
           <Text style={styles.word}>{currentWord}</Text>
         ) : (
-          <Text style={styles.noWord}>No phrase available!</Text>
+          <Text style={styles.noWord}>Brak hasła!</Text>
         )}
       </View>
 
@@ -37,7 +37,7 @@ export default function SwiftPlayScreen() {
           onPress={handleNextPhrase}
         >
           <MaterialCommunityIcons name='refresh' size={24} color='white' />
-          <Text style={styles.buttonText}>Next Phrase</Text>
+          <Text style={styles.buttonText}>Następne Hasło</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -45,7 +45,7 @@ export default function SwiftPlayScreen() {
           onPress={() => router.push('/home')}
         >
           <MaterialCommunityIcons name='close' size={24} color='white' />
-          <Text style={styles.buttonText}>End Game</Text>
+          <Text style={styles.buttonText}>Zakończ Grę</Text>
         </TouchableOpacity>
       </View>
     </View>
