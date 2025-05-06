@@ -4,8 +4,9 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  Alert,
   ActivityIndicator,
+  Modal,
+  ScrollView,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useGameStore } from '@/stores/gameStore';
@@ -26,14 +27,23 @@ export default function NewGameScreen() {
     selectedCategoryId,
     selectCategory,
     isLoading,
+    resetScores,
   } = useGameStore();
 
   const [showScore, setShowScore] = useState(false);
   const [categorySelectionStep, setCategorySelectionStep] = useState(true);
+  const [showFinalScores, setShowFinalScores] = useState(false);
 
   useEffect(() => {
+    // Make sure modal is closed when component mounts
+    setShowFinalScores(false);
     startNewGame();
     setCategorySelectionStep(true);
+
+    // Cleanup function to ensure state is reset when component unmounts
+    return () => {
+      setShowFinalScores(false);
+    };
   }, []);
 
   const handleChangeWord = () => {
@@ -55,6 +65,21 @@ export default function NewGameScreen() {
     setCategorySelectionStep(false); // Move to word display after category selection
   };
 
+  const handleEndGame = () => {
+    setShowFinalScores(true);
+  };
+
+  const handleReturnToMainMenu = () => {
+    // First reset scores
+    resetScores();
+    // Close the modal
+    setShowFinalScores(false);
+    // Use a small delay to ensure clean navigation
+    setTimeout(() => {
+      router.replace('/home');
+    }, 100);
+  };
+
   const getCurrentPlayer = () => {
     if (players.length === 0) return null;
     return players[activePlayer];
@@ -62,10 +87,56 @@ export default function NewGameScreen() {
 
   const currentPlayer = getCurrentPlayer();
 
+  // Sort players by score (highest first) for final score display
+  const sortedPlayersByScore = [...players].sort((a, b) => b.score - a.score);
+
+  // Final Score Modal
+  const FinalScoreModal = () => (
+    <Modal
+      visible={showFinalScores}
+      transparent={true}
+      animationType='fade'
+      onRequestClose={() => setShowFinalScores(false)}
+    >
+      <TouchableOpacity
+        style={styles.modalOverlay}
+        activeOpacity={1}
+        onPress={() => setShowFinalScores(false)}
+      >
+        <TouchableOpacity
+          style={styles.modalContent}
+          activeOpacity={1}
+          onPress={(e) => e.stopPropagation()}
+        >
+          <Text style={styles.modalTitle}>Końcowe Wyniki</Text>
+
+          <ScrollView style={styles.scoresList}>
+            {sortedPlayersByScore.map((player, index) => (
+              <View key={player.id} style={styles.scoreRow}>
+                <Text style={styles.position}>{index + 1}.</Text>
+                <Text style={styles.playerScoreName}>{player.name}</Text>
+                <Text style={styles.playerScorePoints}>{player.score} pkt</Text>
+              </View>
+            ))}
+          </ScrollView>
+
+          <TouchableOpacity
+            style={[styles.button, styles.returnButton]}
+            onPress={handleReturnToMainMenu}
+          >
+            <MaterialCommunityIcons name='home' size={24} color='white' />
+            <Text style={styles.buttonText}>Powrót do Menu</Text>
+          </TouchableOpacity>
+        </TouchableOpacity>
+      </TouchableOpacity>
+    </Modal>
+  );
+
   // Category selection UI
   if (categorySelectionStep) {
     return (
       <View style={styles.container}>
+        <FinalScoreModal />
         <View style={styles.header}>
           <Text style={styles.title}>Wybierz Kategorię</Text>
           {currentPlayer && (
@@ -105,7 +176,7 @@ export default function NewGameScreen() {
 
         <TouchableOpacity
           style={[styles.button, styles.backButton]}
-          onPress={() => router.push('/home')}
+          onPress={handleEndGame}
         >
           <MaterialCommunityIcons name='close' size={24} color='white' />
           <Text style={styles.buttonText}>Zakończ Grę</Text>
@@ -117,6 +188,7 @@ export default function NewGameScreen() {
   // Word display and guessing UI (original game flow)
   return (
     <View style={styles.container}>
+      <FinalScoreModal />
       <View style={styles.header}>
         <Text style={styles.title}>Twoje Hasło</Text>
         {currentPlayer && (
@@ -188,7 +260,7 @@ export default function NewGameScreen() {
 
           <TouchableOpacity
             style={[styles.button, styles.backButton]}
-            onPress={() => router.push('/home')}
+            onPress={handleEndGame}
           >
             <MaterialCommunityIcons name='close' size={24} color='white' />
             <Text style={styles.buttonText}>Zakończ Grę</Text>
@@ -404,5 +476,59 @@ const styles = StyleSheet.create({
     marginTop: 10,
     fontSize: 16,
     color: '#666',
+  },
+  // Modal styles
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    borderRadius: 15,
+    padding: 20,
+    width: '90%',
+    maxHeight: '80%',
+  },
+  modalTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: '#f4511e',
+    marginBottom: 20,
+  },
+  scoresList: {
+    maxHeight: 300,
+    marginBottom: 20,
+  },
+  scoreRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  position: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    width: 30,
+    color: '#555',
+  },
+  playerScoreName: {
+    fontSize: 18,
+    flex: 1,
+    color: '#333',
+  },
+  playerScorePoints: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#4CAF50',
+    width: 60,
+    textAlign: 'right',
+  },
+  returnButton: {
+    backgroundColor: '#4CAF50',
   },
 });

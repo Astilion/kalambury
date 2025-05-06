@@ -347,9 +347,11 @@ export const useGameStore = create<GameState>()(
               ? 0
               : state.activePlayer,
         })),
+      // Updated resetScores function - makes sure to reset all player scores to 0
       resetScores: () =>
         set((state) => ({
           players: state.players.map((player) => ({ ...player, score: 0 })),
+          activePlayer: 0, // Reset active player to the first player
         })),
     }),
     {
