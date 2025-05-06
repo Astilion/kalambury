@@ -31,8 +31,8 @@ export default function PlayersSelectionScreen() {
   };
 
   const handleStartGame = () => {
-    if (players.length < 1) {
-      Alert.alert('Błąd', 'Dodaj co najmniej jednego gracza');
+    if (players.length < 2) {
+      Alert.alert('Błąd', 'Dodaj co najmniej dwóch graczy');
       return;
     }
 
