@@ -61,7 +61,7 @@ export default function HomeScreen() {
       )}
       {!hasEnoughPlayers && (
         <Text style={styles.warning}>
-          Dodaj przynajmniej dwóch graczy, aby rozpocząć grę
+          Aby rozpocząć grę, dodaj przynajmniej dwóch graczy
         </Text>
       )}
     </View>
