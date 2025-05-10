@@ -5,6 +5,7 @@ import MenuButton from '../../components/MenuButton';
 import { useGameStore } from '@/stores/gameStore';
 import { AppRoute } from '@/types';
 import CurvedTitle from '@/components/CurvedTitle';
+import ButtonComponent from '../../components/MenuButton';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -23,36 +24,54 @@ export default function HomeScreen() {
     <View style={styles.container}>
       <CurvedTitle />
       <View style={styles.menuContainer}>
-        <MenuButton
+        <ButtonComponent
           title='Szybka Gra'
           onPress={() => router.push('/swiftplay')}
           iconName='lightning-bolt-outline'
+          variant='primary'
+          size='medium'
+          animation={{ pulse: true, press: true }}
         />
-        <MenuButton
+        <ButtonComponent
           title='Nowa Gra'
           onPress={() => router.push('/new-game')}
           iconName='gamepad-variant'
           disabled={isNewGameDisabled}
+          variant='primary'
+          size='medium'
+          animation={{ pulse: true, press: true }}
         />
-        <MenuButton
+        <ButtonComponent
           title='Wybór Kategorii'
           onPress={() => router.push('/categories')}
           iconName='format-list-bulleted'
+          variant='primary'
+          size='medium'
+          animation={{ pulse: true, press: true }}
         />
-        <MenuButton
+        <ButtonComponent
           title='Wybór Graczy'
           onPress={() => router.push('/players' as any)}
           iconName='account-group'
+          variant='primary'
+          size='medium'
+          animation={{ pulse: true, press: true }}
         />
-        <MenuButton
+        <ButtonComponent
           title='Ustawienia'
           onPress={() => router.push('/settings')}
           iconName='cog'
+          variant='primary'
+          size='medium'
+          animation={{ pulse: true, press: true }}
         />
-        <MenuButton
+        <ButtonComponent
           title='Reklamy On/Off'
           onPress={() => router.push('/ads' as any)}
           iconName='youtube-tv'
+          variant='primary'
+          size='medium'
+          animation={{ pulse: true, press: true }}
         />
       </View>
       {!isCategoriesSelected && (
