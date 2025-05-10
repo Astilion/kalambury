@@ -359,7 +359,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
   },
   word: {
-    fontSize: 40,
+    fontSize: 32,
     fontWeight: 'bold',
     color: '#333',
     textAlign: 'center',

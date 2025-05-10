@@ -16,7 +16,7 @@ export default function CurvedTitle() {
   const svgWidth = screenWidth;
   const svgHeight = 160;
   const fontSize = screenWidth * 0.12;
-  const startOffset = screenWidth < 400 ? '20%' : '19%';
+  const startOffset = screenWidth < 400 ? '18%' : '19%';
 
   // Animation for subtle pulsing effect
   const pulseAnim = useRef(new Animated.Value(1)).current;
