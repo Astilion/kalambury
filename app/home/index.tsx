@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 import MenuButton from '../../components/MenuButton';
 import { useGameStore } from '@/stores/gameStore';
 import { AppRoute } from '@/types';
+import CurvedTitle from '@/components/CurvedTitle';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -20,7 +21,7 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Kalambury</Text>
+      <CurvedTitle />
       <View style={styles.menuContainer}>
         <MenuButton
           title='Szybka Gra'
