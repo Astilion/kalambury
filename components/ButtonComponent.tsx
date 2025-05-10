@@ -98,9 +98,9 @@ const ButtonComponent: React.FC<ButtonProps> = ({
         text: 'white',
       },
       warning: {
-        background: '#ffc107',
+        background: '#f3bc16',
         backgroundActive: '#ffcd39',
-        text: 'black',
+        text: 'white',
       },
       info: {
         background: '#17a2b8',
@@ -291,6 +291,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.27,
     shadowRadius: 4.65,
+    alignSelf: 'center',
   },
   pressableArea: {
     overflow: 'hidden',

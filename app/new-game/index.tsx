@@ -12,6 +12,7 @@ import {
 import { useRouter } from 'expo-router';
 import { useGameStore } from '@/stores/gameStore';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import ButtonComponent from '@/components/ButtonComponent';
 
 export default function NewGameScreen() {
   const router = useRouter();
@@ -120,14 +121,12 @@ export default function NewGameScreen() {
               </View>
             ))}
           </ScrollView>
-
-          <TouchableOpacity
-            style={[styles.button, styles.returnButton]}
+          <ButtonComponent
+            title='Powrót do menu'
+            variant='success'
             onPress={handleReturnToMainMenu}
-          >
-            <MaterialCommunityIcons name='home' size={24} color='white' />
-            <Text style={styles.buttonText}>Powrót do Menu</Text>
-          </TouchableOpacity>
+            iconName='home'
+          />
         </TouchableOpacity>
       </TouchableOpacity>
     </Modal>
@@ -158,13 +157,13 @@ export default function NewGameScreen() {
               Wybierz jedną z kategorii:
             </Text>
             {categoryOptions.map((category) => (
-              <TouchableOpacity
+              <ButtonComponent
+                title={category.name}
                 key={category.id}
-                style={styles.categoryButton}
+                variant='info'
+                size='large'
                 onPress={() => handleCategorySelect(category.id)}
-              >
-                <Text style={styles.categoryButtonText}>{category.name}</Text>
-              </TouchableOpacity>
+              />
             ))}
 
             {categoryOptions.length === 0 && (
@@ -174,14 +173,13 @@ export default function NewGameScreen() {
             )}
           </View>
         )}
-
-        <TouchableOpacity
-          style={[styles.button, styles.backButton]}
+        <ButtonComponent
+          title='Zakończ Grę'
           onPress={handleEndGame}
-        >
-          <MaterialCommunityIcons name='close' size={24} color='white' />
-          <Text style={styles.buttonText}>Zakończ Grę</Text>
-        </TouchableOpacity>
+          variant='danger'
+          iconName='close'
+          animation={{ pulse: false, press: true }}
+        />
       </View>
     );
   }
@@ -226,56 +224,39 @@ export default function NewGameScreen() {
 
       {!showScore ? (
         <View style={styles.actionsContainer}>
-          <TouchableOpacity
-            style={[styles.button, styles.endRoundButton]}
+          <ButtonComponent
+            title='Zakończ Rundę'
+            variant='warning'
             onPress={handleEndRound}
-          >
-            <MaterialCommunityIcons name='check' size={24} color='white' />
-            <Text style={styles.buttonText}>Zakończ Rundę</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[
-              styles.button,
-              styles.changeWordButton,
-              wordChangesRemaining <= 0 && styles.disabledButton,
-            ]}
-            onPress={handleChangeWord}
-          >
-            <MaterialCommunityIcons
-              name={
-                wordChangesRemaining > 0 ? 'swap-horizontal' : 'flag-outline'
-              }
-              size={24}
-              color={'white'}
-            />
-            <Text
-              style={[
-                styles.buttonText,
-                wordChangesRemaining <= 0 && styles.disabledButtonText,
-              ]}
-            >
-              {wordChangesRemaining > 0
+            iconName='check'
+          />
+          <ButtonComponent
+            title={
+              wordChangesRemaining > 0
                 ? `Zmień Hasło (${wordChangesRemaining})`
-                : 'Poddaj się'}
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.button, styles.scoreboardButton]}
+                : 'Poddaj Się'
+            }
+            variant={wordChangesRemaining > 0 ? 'primary' : 'danger'}
+            iconName={
+              wordChangesRemaining > 0 ? 'swap-horizontal' : 'flag-outline'
+            }
+            onPress={handleChangeWord}
+            animation={{ press: true, pulse: false }}
+          />
+          <ButtonComponent
+            title='Wyniki'
+            variant='info'
+            animation={{ press: true, pulse: false }}
             onPress={() => router.push('/scoreboard')}
-          >
-            <MaterialCommunityIcons name='trophy' size={24} color='white' />
-            <Text style={styles.buttonText}>Wyniki</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.button, styles.backButton]}
+            iconName='trophy'
+          />
+          <ButtonComponent
+            title='Zakończ grę'
+            variant='danger'
+            animation={{ press: true, pulse: false }}
             onPress={handleEndGame}
-          >
-            <MaterialCommunityIcons name='close' size={24} color='white' />
-            <Text style={styles.buttonText}>Zakończ Grę</Text>
-          </TouchableOpacity>
+            iconName='close'
+          />
         </View>
       ) : (
         <View style={styles.scoreContainer}>
@@ -502,6 +483,7 @@ const styles = StyleSheet.create({
   categoryContainer: {
     flex: 0.7,
     padding: 20,
+    alignItems: 'center',
   },
   categoryPrompt: {
     fontSize: 20,
