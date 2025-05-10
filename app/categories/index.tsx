@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import CategoryItem from '../../components/CategoryItem';
-import MenuButton from '../../components/MenuButton';
+import MenuButton from '../../components/ButtonComponent';
 import { useGameStore } from '../../stores/gameStore';
 
 // Get device dimensions

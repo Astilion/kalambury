@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useGameStore } from '@/stores/gameStore';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import ButtonComponent from '@/components/ButtonComponent';
 
 export default function SwiftPlayScreen() {
   const router = useRouter();
@@ -32,21 +33,20 @@ export default function SwiftPlayScreen() {
       </View>
 
       <View style={styles.actionsContainer}>
-        <TouchableOpacity
-          style={[styles.button, styles.nextButton]}
+        <ButtonComponent
+          title='Następne Hasło'
           onPress={handleNextPhrase}
-        >
-          <MaterialCommunityIcons name='refresh' size={24} color='white' />
-          <Text style={styles.buttonText}>Następne Hasło</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[styles.button, styles.backButton]}
+          variant='success'
+          iconName='refresh'
+          animation={{ pulse: false, press: true }}
+        />
+        <ButtonComponent
+          title='Zakończ Grę'
           onPress={() => router.push('/home')}
-        >
-          <MaterialCommunityIcons name='close' size={24} color='white' />
-          <Text style={styles.buttonText}>Zakończ Grę</Text>
-        </TouchableOpacity>
+          variant='danger'
+          iconName='close'
+          animation={{ pulse: false, press: true }}
+        />
       </View>
     </View>
   );
@@ -95,6 +95,7 @@ const styles = StyleSheet.create({
   },
   actionsContainer: {
     flexDirection: 'column',
+    alignItems: 'center',
     gap: 15,
     marginBottom: 20,
   },
