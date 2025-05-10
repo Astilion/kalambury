@@ -1,15 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import {
   View,
   StyleSheet,
   FlatList,
   Text,
   ActivityIndicator,
+  Dimensions,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import CategoryItem from '../../components/CategoryItem';
 import MenuButton from '../../components/MenuButton';
 import { useGameStore } from '../../stores/gameStore';
+
+// Get device dimensions
+const { width } = Dimensions.get('window');
+// Set up our grid configuration
+const COLUMN_COUNT = 2;
+const CONTAINER_PADDING = 20;
+const ITEM_SPACING = 10;
 
 export default function CategoriesScreen() {
   const router = useRouter();
@@ -23,8 +31,49 @@ export default function CategoriesScreen() {
 
   // Load categories when component mounts
   useEffect(() => {
-    loadCategories();
+    try {
+      loadCategories();
+    } catch (error) {
+      console.error('Error loading categories:', error);
+    }
   }, []);
+
+  // Define what our Category type looks like
+  interface CategoryType {
+    id: string;
+    name: string;
+  }
+
+  const renderItem = ({
+    item,
+    index,
+  }: {
+    item: CategoryType;
+    index: number;
+  }) => {
+    // Check if item is undefined or doesn't have required properties
+    if (!item || !item.id) {
+      console.warn('Encountered invalid category item', item);
+      return null;
+    }
+
+    return (
+      <View
+        style={[
+          styles.categoryContainer,
+          index % 2 === 0
+            ? { marginRight: ITEM_SPACING / 2 }
+            : { marginLeft: ITEM_SPACING / 2 },
+        ]}
+      >
+        <CategoryItem
+          category={item}
+          selected={selectedCategories[item.id] || false}
+          onToggle={() => toggleCategory(item.id)}
+        />
+      </View>
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -37,15 +86,12 @@ export default function CategoriesScreen() {
         </View>
       ) : (
         <FlatList
-          data={availableCategories}
-          renderItem={({ item }) => (
-            <CategoryItem
-              category={item}
-              selected={selectedCategories[item.id] || false}
-              onToggle={() => toggleCategory(item.id)}
-            />
-          )}
-          keyExtractor={(item) => item.id}
+          data={availableCategories?.filter(Boolean) || []}
+          renderItem={renderItem}
+          keyExtractor={(item) => item?.id || Math.random().toString()}
+          numColumns={COLUMN_COUNT}
+          contentContainerStyle={styles.listContent}
+          columnWrapperStyle={styles.columnsWrapper}
           style={styles.list}
           ListEmptyComponent={
             <Text style={styles.emptyText}>
@@ -69,7 +115,7 @@ export default function CategoriesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    padding: CONTAINER_PADDING,
   },
   title: {
     fontSize: 24,
@@ -79,8 +125,18 @@ const styles = StyleSheet.create({
     marginTop: 60,
     color: '#f4511e',
   },
+  listContent: {
+    paddingVertical: ITEM_SPACING,
+  },
   list: {
     flex: 1,
+  },
+  columnsWrapper: {
+    justifyContent: 'space-between', // This ensures equal spacing
+    marginBottom: ITEM_SPACING,
+  },
+  categoryContainer: {
+    width: (width - CONTAINER_PADDING * 2 - ITEM_SPACING) / COLUMN_COUNT,
   },
   loadingContainer: {
     flex: 1,
@@ -97,9 +153,8 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   buttonContainer: {
-    flex: 1,
     alignItems: 'center',
     marginTop: 10,
-    gap: 10,
+    marginBottom: 20,
   },
 });
