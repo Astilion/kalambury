@@ -24,6 +24,11 @@ export default function PlayersSelectionScreen() {
   const [newPlayerName, setNewPlayerName] = useState('');
 
   const handleAddPlayer = () => {
+    if (players.length >= 19) {
+      Alert.alert('Limit graczy', 'Można dodać maksymalnie 19 graczy.');
+      return;
+    }
+
     if (newPlayerName.trim()) {
       addPlayer(newPlayerName.trim());
       setNewPlayerName('');
