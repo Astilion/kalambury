@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   Modal,
   ScrollView,
+  Dimensions,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useGameStore } from '@/stores/gameStore';
@@ -190,7 +191,9 @@ export default function NewGameScreen() {
     <View style={styles.container}>
       <FinalScoreModal />
       <View style={styles.header}>
-        <Text style={styles.title}>Twoje Hasło</Text>
+        <Text style={styles.title}>
+          {showScore ? 'Kto odgadł hasło?' : 'Twoje Hasło'}
+        </Text>
         {currentPlayer && (
           <Text style={styles.currentPlayer}>
             Gracz: <Text style={styles.playerName}>{currentPlayer.name}</Text>
@@ -198,20 +201,28 @@ export default function NewGameScreen() {
         )}
       </View>
 
-      <View style={styles.wordContainer}>
-        {currentWord ? (
-          <>
-            <Text style={styles.word}>{currentWord}</Text>
-            {!showScore && (
+      {!showScore ? (
+        // Full-size word container when showing the word
+        <View style={styles.wordContainer}>
+          {currentWord ? (
+            <>
+              <Text style={styles.word}>{currentWord}</Text>
               <Text style={styles.changesRemaining}>
                 Pozostałe zmiany: {wordChangesRemaining}
               </Text>
-            )}
-          </>
-        ) : (
-          <Text style={styles.noWord}>Nie wybrano kategorii!</Text>
-        )}
-      </View>
+            </>
+          ) : (
+            <Text style={styles.noWord}>Nie wybrano kategorii!</Text>
+          )}
+        </View>
+      ) : (
+        // Compact word container when selecting who answered
+        <View style={styles.compactWordContainer}>
+          {currentWord && (
+            <Text style={styles.compactWord}>Hasło: "{currentWord}"</Text>
+          )}
+        </View>
+      )}
 
       {!showScore ? (
         <View style={styles.actionsContainer}>
@@ -271,26 +282,37 @@ export default function NewGameScreen() {
           <Text style={styles.scoreTitle}>Kto odgadł hasło?</Text>
 
           {players.length > 0 ? (
-            <View style={styles.playerButtons}>
-              {players
-                .filter((player) => player.id !== currentPlayer?.id)
-                .map((player) => (
-                  <TouchableOpacity
-                    key={player.id}
-                    style={styles.playerScoreButton}
-                    onPress={() => {
-                      addPoint(player.id);
-                      nextWord(player.id);
-                      setShowScore(false);
-                      setCategorySelectionStep(true);
-                    }}
-                  >
-                    <Text style={styles.playerScoreButtonText}>
-                      {player.name} (+1)
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-            </View>
+            <ScrollView style={styles.playerButtonsScrollView}>
+              <View style={styles.playerButtons}>
+                {players
+                  .filter((player) => player.id !== currentPlayer?.id)
+                  .map((player) => {
+                    return (
+                      <TouchableOpacity
+                        key={player.id}
+                        style={[styles.playerScoreButton]}
+                        onPress={() => {
+                          addPoint(player.id);
+                          nextWord(player.id);
+                          setShowScore(false);
+                          setCategorySelectionStep(true);
+                        }}
+                      >
+                        <View style={styles.playerScoreContent}>
+                          <Text
+                            style={styles.playerScoreButtonText}
+                            numberOfLines={1}
+                            ellipsizeMode='tail'
+                          >
+                            {player.name}
+                          </Text>
+                          <Text style={styles.pointsText}>(+1)</Text>
+                        </View>
+                      </TouchableOpacity>
+                    );
+                  })}
+              </View>
+            </ScrollView>
           ) : (
             <Text style={styles.noPlayers}>Brak graczy</Text>
           )}
@@ -346,8 +368,23 @@ const styles = StyleSheet.create({
     padding: 20,
     marginBottom: 30,
   },
+  compactWordContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5F5F5',
+    borderRadius: 15,
+    padding: 12,
+    marginBottom: 15,
+    marginHorizontal: 20,
+  },
   word: {
     fontSize: 40,
+    fontWeight: 'bold',
+    color: '#333',
+    textAlign: 'center',
+  },
+  compactWord: {
+    fontSize: 22,
     fontWeight: 'bold',
     color: '#333',
     textAlign: 'center',
@@ -408,21 +445,46 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     color: '#333',
   },
+  playerButtonsScrollView: {
+    maxHeight: 600,
+  },
   playerButtons: {
-    marginBottom: 20,
-    gap: 10,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    paddingBottom: 15,
   },
   playerScoreButton: {
     backgroundColor: '#4CAF50',
     paddingVertical: 15,
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
     borderRadius: 10,
     alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 10,
+    marginHorizontal: 5,
+    width: '46%',
+  },
+  playerScoreContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
   },
   playerScoreButtonText: {
     color: 'white',
     fontSize: 18,
     fontWeight: 'bold',
+    textAlign: 'center',
+    flex: 1,
+    marginRight: 5,
+  },
+  pointsText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+    width: 40,
+    textAlign: 'right',
   },
   skipButton: {
     backgroundColor: '#9E9E9E',
