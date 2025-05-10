@@ -9,6 +9,7 @@ import {
 import { useRouter } from 'expo-router';
 import { useGameStore } from '@/stores/gameStore';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import ButtonComponent from '@/components/ButtonComponent';
 
 export default function ScoreboardScreen() {
   const router = useRouter();
@@ -39,13 +40,12 @@ export default function ScoreboardScreen() {
       />
 
       <View style={styles.bottomActions}>
-        <TouchableOpacity
-          style={[styles.button, styles.backButton]}
+        <ButtonComponent
+          title='Powrót'
+          variant='info'
+          iconName='arrow-left'
           onPress={() => router.back()}
-        >
-          <MaterialCommunityIcons name='arrow-left' size={24} color='white' />
-          <Text style={styles.buttonText}>Powrót</Text>
-        </TouchableOpacity>
+        />
       </View>
     </View>
   );
@@ -110,6 +110,7 @@ const styles = StyleSheet.create({
   },
   bottomActions: {
     marginTop: 20,
+    marginBottom: 40,
   },
   button: {
     flexDirection: 'row',
