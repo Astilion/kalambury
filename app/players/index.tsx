@@ -11,6 +11,7 @@ import {
 import { useRouter } from 'expo-router';
 import { useGameStore, Player } from '@/stores/gameStore';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import ButtonComponent from '@/components/ButtonComponent';
 
 export default function PlayersSelectionScreen() {
   const router = useRouter();
@@ -75,6 +76,7 @@ export default function PlayersSelectionScreen() {
           onChangeText={setNewPlayerName}
           onSubmitEditing={handleAddPlayer}
         />
+
         <TouchableOpacity style={styles.addButton} onPress={handleAddPlayer}>
           <MaterialCommunityIcons name='plus' size={24} color='white' />
         </TouchableOpacity>
@@ -93,23 +95,25 @@ export default function PlayersSelectionScreen() {
       />
 
       <View style={styles.bottomActions}>
-        <TouchableOpacity
-          style={[styles.button, styles.startButton]}
+        <ButtonComponent
+          title='Rozpocznij Grę'
+          variant='success'
+          iconName='play'
           onPress={handleStartGame}
-        >
-          <MaterialCommunityIcons name='play' size={24} color='white' />
-          <Text style={styles.buttonText}>Rozpocznij grę</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.button, styles.backButton]}
+          animation={{ press: true, pulse: false }}
+        />
+        <ButtonComponent
+          title='Wyjście'
+          variant='danger'
+          iconName='close'
           onPress={() => router.push('/home')}
-        >
-          <MaterialCommunityIcons name='close' size={24} color='white' />
-          <Text style={styles.buttonText}>Wyjście</Text>
-        </TouchableOpacity>
+          animation={{ press: true, pulse: false }}
+        />
+
         {players.length > 0 && (
-          <TouchableOpacity
-            style={[styles.button, styles.resetButton]}
+          <ButtonComponent
+            title='Resetuj Wyniki'
+            iconName='refresh'
             onPress={() => {
               Alert.alert(
                 'Reset wyników',
@@ -120,10 +124,7 @@ export default function PlayersSelectionScreen() {
                 ],
               );
             }}
-          >
-            <MaterialCommunityIcons name='refresh' size={24} color='white' />
-            <Text style={styles.buttonText}>Resetuj wyniki</Text>
-          </TouchableOpacity>
+          ></ButtonComponent>
         )}
       </View>
     </View>
