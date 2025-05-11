@@ -16,6 +16,7 @@ export type CategoryOption = {
 
 interface GameState {
   selectedCategories: Record<string, boolean>;
+  toggleAllCategories: (enable: boolean) => void;
   availableCategories: { id: string; name: string }[];
   currentWord: string | null;
   players: Player[];
@@ -93,7 +94,14 @@ export const useGameStore = create<GameState>()(
           (selected) => selected,
         );
       },
-
+      toggleAllCategories: (enable: boolean) =>
+        set((state) => {
+          const updated = state.availableCategories.reduce((acc, category) => {
+            acc[category.id] = enable;
+            return acc;
+          }, {} as Record<string, boolean>);
+          return { selectedCategories: updated };
+        }),
       // Generate two random category options for the player to choose from
       generateCategoryOptions: () => {
         const state = get();

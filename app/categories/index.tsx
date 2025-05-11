@@ -25,6 +25,7 @@ export default function CategoriesScreen() {
     selectedCategories,
     availableCategories,
     toggleCategory,
+    toggleAllCategories,
     loadCategories,
     isLoading,
   } = useGameStore();
@@ -37,6 +38,9 @@ export default function CategoriesScreen() {
       console.error('Error loading categories:', error);
     }
   }, []);
+
+  const areAllCategoriesSelected =
+    Object.values(selectedCategories).every(Boolean);
 
   // Define what our Category type looks like
   interface CategoryType {
@@ -99,6 +103,17 @@ export default function CategoriesScreen() {
           }
         />
       )}
+      <MenuButton
+        title={
+          areAllCategoriesSelected ? 'Odznacz wszystkie' : 'Zaznacz wszystkie'
+        }
+        iconName={
+          areAllCategoriesSelected
+            ? 'close'
+            : 'checkbox-multiple-marked-outline'
+        }
+        onPress={() => toggleAllCategories(!areAllCategoriesSelected)}
+      />
       <View style={styles.buttonContainer}>
         <MenuButton
           title='Zapisz'
@@ -155,5 +170,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 10,
     marginBottom: 20,
+  },
+  toggleAllContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 15,
   },
 });
