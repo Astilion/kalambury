@@ -1,9 +1,7 @@
 import React, { useEffect } from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import { useRouter } from 'expo-router';
-import MenuButton from '../../components/ButtonComponent';
 import { useGameStore } from '@/stores/gameStore';
-import { AppRoute } from '@/types';
 import CurvedTitle from '@/components/CurvedTitle';
 import ButtonComponent from '../../components/ButtonComponent';
 

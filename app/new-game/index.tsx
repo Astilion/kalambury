@@ -7,7 +7,6 @@ import {
   ActivityIndicator,
   Modal,
   ScrollView,
-  Dimensions,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useGameStore } from '@/stores/gameStore';
@@ -26,7 +25,6 @@ export default function NewGameScreen() {
     changeWord,
     wordChangesRemaining,
     categoryOptions,
-    selectedCategoryId,
     selectCategory,
     isLoading,
     resetScores,

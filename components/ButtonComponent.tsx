@@ -5,7 +5,6 @@ import {
   StyleSheet,
   View,
   Animated,
-  Platform,
   StyleProp,
   ViewStyle,
   TextStyle,

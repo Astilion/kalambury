@@ -1,14 +1,7 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  FlatList,
-} from 'react-native';
+import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useGameStore } from '@/stores/gameStore';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import ButtonComponent from '@/components/ButtonComponent';
 
 export default function ScoreboardScreen() {

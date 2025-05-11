@@ -1,8 +1,7 @@
 import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useGameStore } from '@/stores/gameStore';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import ButtonComponent from '@/components/ButtonComponent';
 
 export default function SwiftPlayScreen() {
