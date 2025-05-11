@@ -14,7 +14,7 @@ import { useGameStore } from '../../stores/gameStore';
 
 // Get device dimensions
 const { width } = Dimensions.get('window');
-// Set up our grid configuration
+
 const COLUMN_COUNT = 2;
 const CONTAINER_PADDING = 20;
 const ITEM_SPACING = 10;
@@ -78,7 +78,6 @@ export default function CategoriesScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Wybierz Kategorie</Text>
-
       {isLoading ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size='large' color='#0000ff' />
@@ -100,7 +99,6 @@ export default function CategoriesScreen() {
           }
         />
       )}
-
       <View style={styles.buttonContainer}>
         <MenuButton
           title='Zapisz'
@@ -132,11 +130,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   columnsWrapper: {
-    justifyContent: 'space-between', // This ensures equal spacing
-    marginBottom: ITEM_SPACING,
+    justifyContent: 'space-between',
+    marginBottom: ITEM_SPACING * 1.2,
   },
   categoryContainer: {
     width: (width - CONTAINER_PADDING * 2 - ITEM_SPACING) / COLUMN_COUNT,
+    marginBottom: 4,
   },
   loadingContainer: {
     flex: 1,

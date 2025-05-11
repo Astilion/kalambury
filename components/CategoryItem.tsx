@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 10,
     borderRadius: 8,
-    height: 60,
+    minHeight: 70,
     backgroundColor: '#F5F5F5',
     borderWidth: 1,
     borderColor: '#E0E0E0',
@@ -80,7 +80,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
     flex: 1,
-    paddingRight: 6,
+    paddingRight: 8,
+    flexWrap: 'wrap', 
   },
   selectedText: {
     color: '#2196F3',
@@ -91,6 +92,8 @@ const styles = StyleSheet.create({
   iconContainer: {
     justifyContent: 'center',
     alignItems: 'center',
+    marginLeft: 4, 
+    width: 28,
   },
 });
 
