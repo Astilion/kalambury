@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useGameStore } from '@/stores/gameStore';
 import ButtonComponent from '@/components/ButtonComponent';
@@ -24,11 +24,16 @@ export default function SwiftPlayScreen() {
       </View>
 
       <View style={styles.wordContainer}>
-        {currentWord ? (
-          <Text style={styles.word}>{currentWord}</Text>
-        ) : (
-          <Text style={styles.noWord}>Brak hasła!</Text>
-        )}
+        <ScrollView
+          contentContainerStyle={styles.scrollViewContent}
+          showsVerticalScrollIndicator={false}
+        >
+          {currentWord ? (
+            <Text style={styles.word}>{currentWord}</Text>
+          ) : (
+            <Text style={styles.noWord}>Brak hasła!</Text>
+          )}
+        </ScrollView>
       </View>
 
       <View style={styles.actionsContainer}>
@@ -68,24 +73,26 @@ const styles = StyleSheet.create({
     color: '#f4511e',
     marginBottom: 10,
   },
-  phraseCounter: {
-    fontSize: 18,
-    color: '#666',
-  },
   wordContainer: {
     flex: 0.6,
     justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: '#F5F5F5',
     borderRadius: 15,
     padding: 20,
     marginBottom: 30,
   },
+  scrollViewContent: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   word: {
-    fontSize: 40,
+    fontSize: 32,
     fontWeight: 'bold',
     color: '#333',
     textAlign: 'center',
+    flexWrap: 'wrap',
+    width: '100%',
   },
   noWord: {
     fontSize: 20,
@@ -97,24 +104,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 15,
     marginBottom: 20,
-  },
-  button: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 15,
-    borderRadius: 10,
-    gap: 10,
-  },
-  nextButton: {
-    backgroundColor: '#4CAF50',
-  },
-  backButton: {
-    backgroundColor: '#F44336',
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
   },
 });
