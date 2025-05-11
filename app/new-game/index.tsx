@@ -6,7 +6,8 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Modal,
-  ScrollView,Alert
+  ScrollView,
+  Alert,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useGameStore } from '@/stores/gameStore';
@@ -62,9 +63,7 @@ export default function NewGameScreen() {
     setShowScore(true);
   };
 
-
   const handleCategorySelect = async (categoryId: string) => {
-
     if (selectingCategory) return;
     setSelectingCategory(true);
 
@@ -388,13 +387,14 @@ const styles = StyleSheet.create({
     color: '#4CAF50',
   },
   wordContainer: {
-    flex: 0.4,
-    justifyContent: 'center',
+    padding: 16,
+    margin: 16,
+    borderRadius: 12,
+    backgroundColor: '#f1f1f1',
     alignItems: 'center',
-    backgroundColor: '#F5F5F5',
-    borderRadius: 15,
-    padding: 20,
-    marginBottom: 30,
+    justifyContent: 'center',
+    minHeight: 80,
+    maxHeight: 150,
   },
   compactWordContainer: {
     justifyContent: 'center',
@@ -406,7 +406,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
   },
   word: {
-    fontSize: 32,
+    fontSize: 26,
     fontWeight: 'bold',
     color: '#333',
     textAlign: 'center',
