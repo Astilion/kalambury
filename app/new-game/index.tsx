@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Modal,
-  ScrollView,
+  ScrollView,Alert
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useGameStore } from '@/stores/gameStore';
@@ -33,16 +33,18 @@ export default function NewGameScreen() {
   const [showScore, setShowScore] = useState(false);
   const [categorySelectionStep, setCategorySelectionStep] = useState(true);
   const [showFinalScores, setShowFinalScores] = useState(false);
+  const [selectingCategory, setSelectingCategory] = useState(false);
 
   useEffect(() => {
-    // Make sure modal is closed when component mounts
     setShowFinalScores(false);
-    startNewGame();
+    resetScores();
+    setSelectingCategory(false);
     setCategorySelectionStep(true);
+    startNewGame();
 
-    // Cleanup function to ensure state is reset when component unmounts
     return () => {
       setShowFinalScores(false);
+      setSelectingCategory(false);
     };
   }, []);
 
@@ -60,9 +62,43 @@ export default function NewGameScreen() {
     setShowScore(true);
   };
 
+
   const handleCategorySelect = async (categoryId: string) => {
-    await selectCategory(categoryId);
-    setCategorySelectionStep(false); // Move to word display after category selection
+
+    if (selectingCategory) return;
+    setSelectingCategory(true);
+
+    try {
+      useGameStore.setState({ currentWord: null });
+      await selectCategory(categoryId);
+
+      const latestState = useGameStore.getState();
+
+      if (latestState.currentWord) {
+        setCategorySelectionStep(false);
+      } else {
+        console.warn('First attempt failed, trying again');
+        await selectCategory(categoryId);
+
+        const secondAttemptState = useGameStore.getState();
+        if (secondAttemptState.currentWord) {
+          setCategorySelectionStep(false);
+        } else {
+          Alert.alert(
+            'Problem z hasłem',
+            'Nie udało się załadować hasła. Spróbuj inną kategorię.',
+            [{ text: 'OK' }],
+          );
+        }
+      }
+    } catch (error) {
+      console.error('Error selecting category:', error);
+      Alert.alert('Błąd', 'Wystąpił nieoczekiwany problem. Spróbuj ponownie.', [
+        { text: 'OK' },
+      ]);
+    } finally {
+      setSelectingCategory(false);
+    }
   };
 
   const handleEndGame = () => {
@@ -130,6 +166,18 @@ export default function NewGameScreen() {
     </Modal>
   );
 
+  // Show loading indicator during category selection transition
+  if (selectingCategory) {
+    return (
+      <View style={styles.container}>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size='large' color='#f4511e' />
+          <Text style={styles.loadingText}>Wczytywanie hasła...</Text>
+        </View>
+      </View>
+    );
+  }
+
   // Category selection UI
   if (categorySelectionStep) {
     return (
@@ -161,6 +209,7 @@ export default function NewGameScreen() {
                 variant='info'
                 size='large'
                 onPress={() => handleCategorySelect(category.id)}
+                disabled={selectingCategory}
               />
             ))}
 

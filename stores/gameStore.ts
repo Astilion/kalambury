@@ -37,7 +37,7 @@ interface GameState {
   resetScores: () => void;
   areCategoriesSelected: () => boolean;
   generateCategoryOptions: () => void;
-  selectCategory: (categoryId: string) => Promise<void>;
+  selectCategory: (categoryId: string) => Promise<boolean>;
 }
 
 export const useGameStore = create<GameState>()(
@@ -136,32 +136,64 @@ export const useGameStore = create<GameState>()(
 
       // Select a category and fetch a word from it
       selectCategory: async (categoryId: string) => {
+        // First set loading state and clear current word
         set({
           selectedCategoryId: categoryId,
           isLoading: true,
+          currentWord: null,
         });
 
-        try {
-          const phrases = await getPhrasesByCategory(categoryId);
+        let attempts = 0;
+        const maxAttempts = 2;
 
-          if (phrases.length === 0) {
-            console.warn(`No phrases found for category: ${categoryId}`);
-            set({ isLoading: false });
-            return;
+        while (attempts < maxAttempts) {
+          attempts++;
+
+          try {
+            // Get phrases for the selected category
+            const phrases = await getPhrasesByCategory(categoryId);
+
+            // Validate phrases
+            if (!phrases || phrases.length === 0) {
+              console.warn(`No phrases found for category: ${categoryId}`);
+              continue; // Try again if possible
+            }
+
+            // Get random phrase
+            const randomPhraseIndex = Math.floor(
+              Math.random() * phrases.length,
+            );
+            const randomPhrase = phrases[randomPhraseIndex];
+
+            // Validate the phrase
+            if (!randomPhrase || !randomPhrase.text) {
+              console.error('Invalid phrase selected');
+              continue; // Try again if possible
+            }
+
+            // Set the current word
+            set({
+              currentWord: randomPhrase.text,
+              isLoading: false,
+              wordChangesRemaining: 3,
+            });
+
+            // Verify the word was actually set
+            const currentState = get();
+            if (currentState.currentWord) {
+              return true; // Success!
+            }
+          } catch (error) {
+            console.error(
+              `Error selecting category (attempt ${attempts}):`,
+              error,
+            );
           }
-
-          const randomPhraseIndex = Math.floor(Math.random() * phrases.length);
-          const randomPhrase = phrases[randomPhraseIndex];
-
-          set({
-            currentWord: randomPhrase.text,
-            isLoading: false,
-            wordChangesRemaining: 3, // Reset word changes when selecting a new category
-          });
-        } catch (error) {
-          console.error('Error selecting category:', error);
-          set({ isLoading: false });
         }
+
+        // If we reach here, all attempts failed
+        set({ isLoading: false });
+        return false;
       },
 
       // Updated to use the selected category when changing word
