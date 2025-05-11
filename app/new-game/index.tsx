@@ -410,6 +410,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#333',
     textAlign: 'center',
+    flexWrap: 'wrap',
   },
   compactWord: {
     fontSize: 22,
