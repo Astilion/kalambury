@@ -13,6 +13,7 @@ import { useRouter } from 'expo-router';
 import { useGameStore } from '@/stores/gameStore';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import ButtonComponent from '@/components/ButtonComponent';
+import FinalScoreModal from '@/components/game/FinalScoreModal';
 
 export default function NewGameScreen() {
   const router = useRouter();
@@ -126,44 +127,6 @@ export default function NewGameScreen() {
   const sortedPlayersByScore = [...players].sort((a, b) => b.score - a.score);
 
   // Final Score Modal
-  const FinalScoreModal = () => (
-    <Modal
-      visible={showFinalScores}
-      transparent={true}
-      animationType='fade'
-      onRequestClose={() => setShowFinalScores(false)}
-    >
-      <TouchableOpacity
-        style={styles.modalOverlay}
-        activeOpacity={1}
-        onPress={() => setShowFinalScores(false)}
-      >
-        <TouchableOpacity
-          style={styles.modalContent}
-          activeOpacity={1}
-          onPress={(e) => e.stopPropagation()}
-        >
-          <Text style={styles.modalTitle}>Końcowe Wyniki</Text>
-
-          <ScrollView style={styles.scoresList}>
-            {sortedPlayersByScore.map((player, index) => (
-              <View key={player.id} style={styles.scoreRow}>
-                <Text style={styles.position}>{index + 1}.</Text>
-                <Text style={styles.playerScoreName}>{player.name}</Text>
-                <Text style={styles.playerScorePoints}>{player.score} pkt</Text>
-              </View>
-            ))}
-          </ScrollView>
-          <ButtonComponent
-            title='Powrót do menu'
-            variant='success'
-            onPress={handleReturnToMainMenu}
-            iconName='home'
-          />
-        </TouchableOpacity>
-      </TouchableOpacity>
-    </Modal>
-  );
 
   // Show loading indicator during category selection transition
   if (selectingCategory) {
@@ -181,7 +144,12 @@ export default function NewGameScreen() {
   if (categorySelectionStep) {
     return (
       <View style={styles.container}>
-        <FinalScoreModal />
+        <FinalScoreModal
+          visible={showFinalScores}
+          players={sortedPlayersByScore}
+          onClose={() => setShowFinalScores}
+          onReturnToMenu={handleReturnToMainMenu}
+        />
         <View style={styles.header}>
           <Text style={styles.title}>Wybierz Kategorię</Text>
           {currentPlayer && (
@@ -233,7 +201,12 @@ export default function NewGameScreen() {
   // Word display and guessing UI (original game flow)
   return (
     <View style={styles.container}>
-      <FinalScoreModal />
+      <FinalScoreModal
+        visible={showFinalScores}
+        players={sortedPlayersByScore}
+        onClose={() => setShowFinalScores}
+        onReturnToMenu={handleReturnToMainMenu}
+      />
       <View style={styles.header}>
         <Text style={styles.title}>
           {showScore ? 'Kto odgadł hasło?' : 'Twoje Hasło'}
@@ -570,57 +543,4 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   // Modal styles
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-  modalContent: {
-    backgroundColor: 'white',
-    borderRadius: 15,
-    padding: 20,
-    width: '90%',
-    maxHeight: '80%',
-  },
-  modalTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    color: '#f4511e',
-    marginBottom: 20,
-  },
-  scoresList: {
-    maxHeight: 300,
-    marginBottom: 20,
-  },
-  scoreRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
-  position: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    width: 30,
-    color: '#555',
-  },
-  playerScoreName: {
-    fontSize: 18,
-    flex: 1,
-    color: '#333',
-  },
-  playerScorePoints: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#4CAF50',
-    width: 60,
-    textAlign: 'right',
-  },
-  returnButton: {
-    backgroundColor: '#4CAF50',
-  },
 });
