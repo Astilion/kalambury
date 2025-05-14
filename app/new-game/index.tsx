@@ -14,6 +14,7 @@ import { useGameStore } from '@/stores/gameStore';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import ButtonComponent from '@/components/ButtonComponent';
 import FinalScoreModal from '@/components/game/FinalScoreModal';
+import LoadingIndicator from '@/components/LoadingIndicator';
 
 export default function NewGameScreen() {
   const router = useRouter();
@@ -126,18 +127,9 @@ export default function NewGameScreen() {
   // Sort players by score (highest first) for final score display
   const sortedPlayersByScore = [...players].sort((a, b) => b.score - a.score);
 
-  // Final Score Modal
-
   // Show loading indicator during category selection transition
   if (selectingCategory) {
-    return (
-      <View style={styles.container}>
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size='large' color='#f4511e' />
-          <Text style={styles.loadingText}>Wczytywanie hasła...</Text>
-        </View>
-      </View>
-    );
+    <LoadingIndicator />;
   }
 
   // Category selection UI
@@ -160,10 +152,7 @@ export default function NewGameScreen() {
         </View>
 
         {isLoading ? (
-          <View style={styles.loadingContainer}>
-            <ActivityIndicator size='large' color='#f4511e' />
-            <Text style={styles.loadingText}>Wczytywanie kategorii...</Text>
-          </View>
+          <LoadingIndicator />
         ) : (
           <View style={styles.categoryContainer}>
             <Text style={styles.categoryPrompt}>
@@ -532,15 +521,6 @@ const styles = StyleSheet.create({
     color: '#999',
     marginTop: 30,
   },
-  loadingContainer: {
-    flex: 0.7,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loadingText: {
-    marginTop: 10,
-    fontSize: 16,
-    color: '#666',
-  },
+
   // Modal styles
 });
