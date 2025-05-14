@@ -15,6 +15,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import ButtonComponent from '@/components/ButtonComponent';
 import FinalScoreModal from '@/components/game/FinalScoreModal';
 import LoadingIndicator from '@/components/LoadingIndicator';
+import CategorySelectionPhase from '@/components/game/CategorySelectionPhase';
 
 export default function NewGameScreen() {
   const router = useRouter();
@@ -142,47 +143,17 @@ export default function NewGameScreen() {
           onClose={() => setShowFinalScores}
           onReturnToMenu={handleReturnToMainMenu}
         />
-        <View style={styles.header}>
-          <Text style={styles.title}>Wybierz Kategorię</Text>
-          {currentPlayer && (
-            <Text style={styles.currentPlayer}>
-              Gracz: <Text style={styles.playerName}>{currentPlayer.name}</Text>
-            </Text>
-          )}
-        </View>
 
         {isLoading ? (
           <LoadingIndicator />
         ) : (
-          <View style={styles.categoryContainer}>
-            <Text style={styles.categoryPrompt}>
-              Wybierz jedną z kategorii:
-            </Text>
-            {categoryOptions.map((category) => (
-              <ButtonComponent
-                title={category.name}
-                key={category.id}
-                variant='info'
-                size='large'
-                onPress={() => handleCategorySelect(category.id)}
-                disabled={selectingCategory}
-              />
-            ))}
-
-            {categoryOptions.length === 0 && (
-              <Text style={styles.noCategories}>
-                Brak dostępnych kategorii. Sprawdź ustawienia.
-              </Text>
-            )}
-          </View>
+          <CategorySelectionPhase
+            currentPlayer={currentPlayer}
+            onCategorySelect={handleCategorySelect}
+            onEndGame={handleEndGame}
+            isLoading={isLoading}
+          />
         )}
-        <ButtonComponent
-          title='Zakończ Grę'
-          onPress={handleEndGame}
-          variant='danger'
-          iconName='close'
-          animation={{ pulse: false, press: true }}
-        />
       </View>
     );
   }
@@ -489,37 +460,6 @@ const styles = StyleSheet.create({
   },
   scoreboardButton: {
     backgroundColor: '#2196F3',
-  },
-  categoryContainer: {
-    flex: 0.7,
-    padding: 20,
-    alignItems: 'center',
-  },
-  categoryPrompt: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 20,
-    color: '#333',
-  },
-  categoryButton: {
-    backgroundColor: '#2196F3',
-    paddingVertical: 20,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    alignItems: 'center',
-    marginBottom: 15,
-  },
-  categoryButtonText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  noCategories: {
-    textAlign: 'center',
-    fontSize: 16,
-    color: '#999',
-    marginTop: 30,
   },
 
   // Modal styles
