@@ -17,6 +17,7 @@ import FinalScoreModal from '@/components/game/FinalScoreModal';
 import LoadingIndicator from '@/components/LoadingIndicator';
 import CategorySelectionPhase from '@/components/game/CategorySelectionPhase';
 import DisplayPhase from '@/components/game/DisplayPhase';
+import ScoringPhase from '@/components/game/ScoringPhase';
 
 export default function NewGameScreen() {
   const router = useRouter();
@@ -118,6 +119,18 @@ export default function NewGameScreen() {
       router.replace('/home');
     }, 100);
   };
+  const handlePlayerScored = (playerId: string): void => {
+    addPoint(playerId);
+    nextWord(playerId);
+    setShowScore(false);
+    setCategorySelectionStep(true);
+  };
+
+  const handleNoOneScored = (): void => {
+    nextWord(null);
+    setShowScore(false);
+    setCategorySelectionStep(true);
+  };
 
   const getCurrentPlayer = () => {
     if (players.length === 0) return null;
@@ -177,57 +190,12 @@ export default function NewGameScreen() {
           onViewScoreboard={() => router.push('/scoreboard')}
         />
       ) : (
-        <View style={styles.scoreContainer}>
-          <Text style={styles.scoreTitle}>Kto odgadł hasło?</Text>
-
-          {players.length > 0 ? (
-            <ScrollView style={styles.playerButtonsScrollView}>
-              <View style={styles.playerButtons}>
-                {players
-                  .filter((player) => player.id !== currentPlayer?.id)
-                  .map((player) => {
-                    return (
-                      <TouchableOpacity
-                        key={player.id}
-                        style={[styles.playerScoreButton]}
-                        onPress={() => {
-                          addPoint(player.id);
-                          nextWord(player.id);
-                          setShowScore(false);
-                          setCategorySelectionStep(true);
-                        }}
-                      >
-                        <View style={styles.playerScoreContent}>
-                          <Text
-                            style={styles.playerScoreButtonText}
-                            numberOfLines={1}
-                            ellipsizeMode='tail'
-                          >
-                            {player.name}
-                          </Text>
-                          <Text style={styles.pointsText}>(+1)</Text>
-                        </View>
-                      </TouchableOpacity>
-                    );
-                  })}
-              </View>
-            </ScrollView>
-          ) : (
-            <Text style={styles.noPlayers}>Brak graczy</Text>
-          )}
-
-          <TouchableOpacity
-            style={[styles.button, styles.skipButton]}
-            onPress={() => {
-              nextWord(null);
-              setShowScore(false);
-              setCategorySelectionStep(true);
-            }}
-          >
-            <MaterialCommunityIcons name='skip-next' size={24} color='white' />
-            <Text style={styles.buttonText}>Nikt nie odgadł</Text>
-          </TouchableOpacity>
-        </View>
+        <ScoringPhase
+          currentPlayer={currentPlayer}
+          players={players}
+          onPlayerScored={handlePlayerScored}
+          onNoOneScored={handleNoOneScored}
+        />
       )}
     </View>
   );

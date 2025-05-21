@@ -1,4 +1,3 @@
-// components/game/CategorySelectionPhase.tsx
 import React from 'react';
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { useGameStore } from '@/stores/gameStore';
