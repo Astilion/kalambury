@@ -16,6 +16,7 @@ import ButtonComponent from '@/components/ButtonComponent';
 import FinalScoreModal from '@/components/game/FinalScoreModal';
 import LoadingIndicator from '@/components/LoadingIndicator';
 import CategorySelectionPhase from '@/components/game/CategorySelectionPhase';
+import DisplayPhase from '@/components/game/DisplayPhase';
 
 export default function NewGameScreen() {
   const router = useRouter();
@@ -167,76 +168,14 @@ export default function NewGameScreen() {
         onClose={() => setShowFinalScores}
         onReturnToMenu={handleReturnToMainMenu}
       />
-      <View style={styles.header}>
-        <Text style={styles.title}>
-          {showScore ? 'Kto odgadł hasło?' : 'Twoje Hasło'}
-        </Text>
-        {currentPlayer && (
-          <Text style={styles.currentPlayer}>
-            Gracz: <Text style={styles.playerName}>{currentPlayer.name}</Text>
-          </Text>
-        )}
-      </View>
-
       {!showScore ? (
-        // Full-size word container when showing the word
-        <View style={styles.wordContainer}>
-          {currentWord ? (
-            <>
-              <Text style={styles.word}>{currentWord}</Text>
-              <Text style={styles.changesRemaining}>
-                Pozostałe zmiany: {wordChangesRemaining}
-              </Text>
-            </>
-          ) : (
-            <Text style={styles.noWord}>Nie wybrano kategorii!</Text>
-          )}
-        </View>
-      ) : (
-        // Compact word container when selecting who answered
-        <View style={styles.compactWordContainer}>
-          {currentWord && (
-            <Text style={styles.compactWord}>Hasło: "{currentWord}"</Text>
-          )}
-        </View>
-      )}
-
-      {!showScore ? (
-        <View style={styles.actionsContainer}>
-          <ButtonComponent
-            title='Zakończ Rundę'
-            variant='warning'
-            onPress={handleEndRound}
-            iconName='check'
-          />
-          <ButtonComponent
-            title={
-              wordChangesRemaining > 0
-                ? `Zmień Hasło (${wordChangesRemaining})`
-                : 'Poddaj Się'
-            }
-            variant={wordChangesRemaining > 0 ? 'primary' : 'danger'}
-            iconName={
-              wordChangesRemaining > 0 ? 'swap-horizontal' : 'flag-outline'
-            }
-            onPress={handleChangeWord}
-            animation={{ press: true, pulse: false }}
-          />
-          <ButtonComponent
-            title='Wyniki'
-            variant='info'
-            animation={{ press: true, pulse: false }}
-            onPress={() => router.push('/scoreboard')}
-            iconName='trophy'
-          />
-          <ButtonComponent
-            title='Zakończ grę'
-            variant='danger'
-            animation={{ press: true, pulse: false }}
-            onPress={handleEndGame}
-            iconName='close'
-          />
-        </View>
+        <DisplayPhase
+          currentPlayer={currentPlayer}
+          onEndRound={handleEndRound}
+          onChangeWord={handleChangeWord}
+          onEndGame={handleEndGame}
+          onViewScoreboard={() => router.push('/scoreboard')}
+        />
       ) : (
         <View style={styles.scoreContainer}>
           <Text style={styles.scoreTitle}>Kto odgadł hasło?</Text>
