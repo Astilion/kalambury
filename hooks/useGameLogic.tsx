@@ -1,11 +1,28 @@
-// hooks/useGameLogic.ts
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useGameStore } from '@/stores/gameStore';
-import { Player } from '@/stores/gameStore';
 
-export default function useGameLogic() {
+export interface GameState {
+  showScore: boolean;
+  categorySelectionStep: boolean;
+  showFinalScores: boolean;
+  selectingCategory: boolean;
+}
+
+export interface GameActions {
+  handleChangeWord: () => void;
+  handleEndRound: () => void;
+  handleCategorySelect: (categoryId: string) => Promise<void>;
+  handleEndGame: () => void;
+  handleReturnToMainMenu: () => void;
+  handlePlayerScored: (playerId: string) => void;
+  handleNoOneScored: () => void;
+  getCurrentPlayer: () => any | null;
+  getSortedPlayersByScore: () => any[];
+}
+
+export const useGameLogic = (): [GameState, GameActions] => {
   const router = useRouter();
   const {
     currentWord,
@@ -17,27 +34,29 @@ export default function useGameLogic() {
     changeWord,
     wordChangesRemaining,
     selectCategory,
+    isLoading,
     resetScores,
   } = useGameStore();
 
-  const [showScore, setShowScore] = useState<boolean>(false);
-  const [categorySelectionStep, setCategorySelectionStep] =
-    useState<boolean>(true);
-  const [showFinalScores, setShowFinalScores] = useState<boolean>(false);
-  const [selectingCategory, setSelectingCategory] = useState<boolean>(false);
+  const [showScore, setShowScore] = useState(false);
+  const [categorySelectionStep, setCategorySelectionStep] = useState(true);
+  const [showFinalScores, setShowFinalScores] = useState(false);
+  const [selectingCategory, setSelectingCategory] = useState(false);
 
-  // Get current player
-  const getCurrentPlayer = (): Player | null => {
-    if (players.length === 0) return null;
-    return players[activePlayer];
-  };
+  useEffect(() => {
+    setShowFinalScores(false);
+    resetScores();
+    setSelectingCategory(false);
+    setCategorySelectionStep(true);
+    startNewGame();
 
-  const currentPlayer = getCurrentPlayer();
+    return () => {
+      setShowFinalScores(false);
+      setSelectingCategory(false);
+    };
+  }, []);
 
-  // Sort players by score (highest first) for final score display
-  const sortedPlayersByScore = [...players].sort((a, b) => b.score - a.score);
-
-  const handleChangeWord = (): void => {
+  const handleChangeWord = () => {
     if (wordChangesRemaining > 0) {
       changeWord();
     } else {
@@ -47,11 +66,11 @@ export default function useGameLogic() {
     }
   };
 
-  const handleEndRound = (): void => {
+  const handleEndRound = () => {
     setShowScore(true);
   };
 
-  const handleCategorySelect = async (categoryId: string): Promise<void> => {
+  const handleCategorySelect = async (categoryId: string) => {
     if (selectingCategory) return;
     setSelectingCategory(true);
 
@@ -88,11 +107,11 @@ export default function useGameLogic() {
     }
   };
 
-  const handleEndGame = (): void => {
+  const handleEndGame = () => {
     setShowFinalScores(true);
   };
 
-  const handleReturnToMainMenu = (): void => {
+  const handleReturnToMainMenu = () => {
     // First reset scores
     resetScores();
     // Close the modal
@@ -116,20 +135,33 @@ export default function useGameLogic() {
     setCategorySelectionStep(true);
   };
 
-  return {
-    categorySelectionStep,
+  const getCurrentPlayer = () => {
+    if (players.length === 0) return null;
+    return players[activePlayer];
+  };
+
+  const getSortedPlayersByScore = () => {
+    return [...players].sort((a, b) => b.score - a.score);
+  };
+
+  const state: GameState = {
     showScore,
+    categorySelectionStep,
     showFinalScores,
     selectingCategory,
-    currentPlayer,
-    sortedPlayersByScore,
-    handleCategorySelect,
-    handleEndRound,
+  };
+
+  const actions: GameActions = {
     handleChangeWord,
+    handleEndRound,
+    handleCategorySelect,
     handleEndGame,
     handleReturnToMainMenu,
     handlePlayerScored,
     handleNoOneScored,
-    setShowFinalScores,
+    getCurrentPlayer,
+    getSortedPlayersByScore,
   };
-}
+
+  return [state, actions];
+};

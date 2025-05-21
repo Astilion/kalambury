@@ -1,18 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ActivityIndicator,
-  Modal,
-  ScrollView,
-  Alert,
-} from 'react-native';
-import { useRouter } from 'expo-router';
+import React from 'react';
+import { View, StyleSheet } from 'react-native';
 import { useGameStore } from '@/stores/gameStore';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import ButtonComponent from '@/components/ButtonComponent';
+import { useRouter } from 'expo-router';
+import { useGameLogic } from '@/hooks/useGameLogic';
+
 import FinalScoreModal from '@/components/game/FinalScoreModal';
 import LoadingIndicator from '@/components/LoadingIndicator';
 import CategorySelectionPhase from '@/components/game/CategorySelectionPhase';
@@ -21,126 +12,25 @@ import ScoringPhase from '@/components/game/ScoringPhase';
 
 export default function NewGameScreen() {
   const router = useRouter();
-  const {
-    currentWord,
-    startNewGame,
-    nextWord,
-    players,
-    activePlayer,
-    addPoint,
-    changeWord,
-    wordChangesRemaining,
-    categoryOptions,
-    selectCategory,
-    isLoading,
-    resetScores,
-  } = useGameStore();
+  const { isLoading } = useGameStore();
 
-  const [showScore, setShowScore] = useState(false);
-  const [categorySelectionStep, setCategorySelectionStep] = useState(true);
-  const [showFinalScores, setShowFinalScores] = useState(false);
-  const [selectingCategory, setSelectingCategory] = useState(false);
-
-  useEffect(() => {
-    setShowFinalScores(false);
-    resetScores();
-    setSelectingCategory(false);
-    setCategorySelectionStep(true);
-    startNewGame();
-
-    return () => {
-      setShowFinalScores(false);
-      setSelectingCategory(false);
-    };
-  }, []);
-
-  const handleChangeWord = () => {
-    if (wordChangesRemaining > 0) {
-      changeWord();
-    } else {
-      nextWord(null);
-      setShowScore(false);
-      setCategorySelectionStep(true);
-    }
-  };
-
-  const handleEndRound = () => {
-    setShowScore(true);
-  };
-
-  const handleCategorySelect = async (categoryId: string) => {
-    if (selectingCategory) return;
-    setSelectingCategory(true);
-
-    try {
-      useGameStore.setState({ currentWord: null });
-      await selectCategory(categoryId);
-
-      const latestState = useGameStore.getState();
-
-      if (latestState.currentWord) {
-        setCategorySelectionStep(false);
-      } else {
-        console.warn('First attempt failed, trying again');
-        await selectCategory(categoryId);
-
-        const secondAttemptState = useGameStore.getState();
-        if (secondAttemptState.currentWord) {
-          setCategorySelectionStep(false);
-        } else {
-          Alert.alert(
-            'Problem z hasłem',
-            'Nie udało się załadować hasła. Spróbuj inną kategorię.',
-            [{ text: 'OK' }],
-          );
-        }
-      }
-    } catch (error) {
-      console.error('Error selecting category:', error);
-      Alert.alert('Błąd', 'Wystąpił nieoczekiwany problem. Spróbuj ponownie.', [
-        { text: 'OK' },
-      ]);
-    } finally {
-      setSelectingCategory(false);
-    }
-  };
-
-  const handleEndGame = () => {
-    setShowFinalScores(true);
-  };
-
-  const handleReturnToMainMenu = () => {
-    // First reset scores
-    resetScores();
-    // Close the modal
-    setShowFinalScores(false);
-    // Use a small delay to ensure clean navigation
-    setTimeout(() => {
-      router.replace('/home');
-    }, 100);
-  };
-  const handlePlayerScored = (playerId: string): void => {
-    addPoint(playerId);
-    nextWord(playerId);
-    setShowScore(false);
-    setCategorySelectionStep(true);
-  };
-
-  const handleNoOneScored = (): void => {
-    nextWord(null);
-    setShowScore(false);
-    setCategorySelectionStep(true);
-  };
-
-  const getCurrentPlayer = () => {
-    if (players.length === 0) return null;
-    return players[activePlayer];
-  };
+  const [
+    { showScore, categorySelectionStep, showFinalScores, selectingCategory },
+    {
+      handleChangeWord,
+      handleEndRound,
+      handleCategorySelect,
+      handleEndGame,
+      handleReturnToMainMenu,
+      handlePlayerScored,
+      handleNoOneScored,
+      getCurrentPlayer,
+      getSortedPlayersByScore,
+    },
+  ] = useGameLogic();
 
   const currentPlayer = getCurrentPlayer();
-
-  // Sort players by score (highest first) for final score display
-  const sortedPlayersByScore = [...players].sort((a, b) => b.score - a.score);
+  const sortedPlayersByScore = getSortedPlayersByScore();
 
   // Show loading indicator during category selection transition
   if (selectingCategory) {
@@ -154,7 +44,7 @@ export default function NewGameScreen() {
         <FinalScoreModal
           visible={showFinalScores}
           players={sortedPlayersByScore}
-          onClose={() => setShowFinalScores}
+          onClose={() => handleReturnToMainMenu()}
           onReturnToMenu={handleReturnToMainMenu}
         />
 
@@ -178,7 +68,7 @@ export default function NewGameScreen() {
       <FinalScoreModal
         visible={showFinalScores}
         players={sortedPlayersByScore}
-        onClose={() => setShowFinalScores}
+        onClose={() => handleReturnToMainMenu()}
         onReturnToMenu={handleReturnToMainMenu}
       />
       {!showScore ? (
@@ -192,7 +82,7 @@ export default function NewGameScreen() {
       ) : (
         <ScoringPhase
           currentPlayer={currentPlayer}
-          players={players}
+          players={useGameStore.getState().players}
           onPlayerScored={handlePlayerScored}
           onNoOneScored={handleNoOneScored}
         />
@@ -207,167 +97,4 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: '#FFFFFF',
   },
-  header: {
-    alignItems: 'center',
-    marginVertical: 20,
-    marginTop: 60,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#f4511e',
-    marginBottom: 10,
-  },
-  currentPlayer: {
-    fontSize: 18,
-    color: '#666',
-  },
-  playerName: {
-    fontWeight: 'bold',
-    color: '#4CAF50',
-  },
-  wordContainer: {
-    padding: 16,
-    margin: 16,
-    borderRadius: 12,
-    backgroundColor: '#f1f1f1',
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: 80,
-    maxHeight: 150,
-  },
-  compactWordContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5F5F5',
-    borderRadius: 15,
-    padding: 12,
-    marginBottom: 15,
-    marginHorizontal: 20,
-  },
-  word: {
-    fontSize: 26,
-    fontWeight: 'bold',
-    color: '#333',
-    textAlign: 'center',
-    flexWrap: 'wrap',
-  },
-  compactWord: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#333',
-    textAlign: 'center',
-  },
-  changesRemaining: {
-    marginTop: 10,
-    fontSize: 16,
-    color: '#666',
-  },
-  noWord: {
-    fontSize: 20,
-    color: '#999',
-    textAlign: 'center',
-  },
-  actionsContainer: {
-    flexDirection: 'column',
-    gap: 15,
-    marginBottom: 20,
-  },
-  button: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 15,
-    borderRadius: 10,
-    gap: 10,
-  },
-  nextButton: {
-    backgroundColor: '#4CAF50',
-  },
-  backButton: {
-    backgroundColor: '#F44336',
-  },
-  endRoundButton: {
-    backgroundColor: '#FFC107',
-  },
-  changeWordButton: {
-    backgroundColor: '#FF9800',
-  },
-  disabledButton: {
-    backgroundColor: '#D32F2F',
-  },
-  disabledButtonText: {
-    color: 'white',
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  scoreContainer: {
-    flex: 0.6,
-  },
-  scoreTitle: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 20,
-    color: '#333',
-  },
-  playerButtonsScrollView: {
-    maxHeight: 600,
-  },
-  playerButtons: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    paddingBottom: 15,
-  },
-  playerScoreButton: {
-    backgroundColor: '#4CAF50',
-    paddingVertical: 15,
-    paddingHorizontal: 10,
-    borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 10,
-    marginHorizontal: 5,
-    width: '46%',
-  },
-  playerScoreContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
-  },
-  playerScoreButtonText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    flex: 1,
-    marginRight: 5,
-  },
-  pointsText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
-    width: 40,
-    textAlign: 'right',
-  },
-  skipButton: {
-    backgroundColor: '#9E9E9E',
-    marginTop: 10,
-  },
-  noPlayers: {
-    textAlign: 'center',
-    fontSize: 16,
-    color: '#999',
-    marginBottom: 20,
-  },
-  scoreboardButton: {
-    backgroundColor: '#2196F3',
-  },
-
-  // Modal styles
 });
