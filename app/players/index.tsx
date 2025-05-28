@@ -1,17 +1,22 @@
-import React, { useState } from 'react';
+// screens/PlayersSelectionScreen.tsx
+import React, { useCallback, useMemo } from 'react';
 import {
   View,
   Text,
   StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  FlatList,
   Alert,
+  KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useGameStore, Player } from '@/stores/gameStore';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useGameStore } from '@/stores/gameStore';
 import ButtonComponent from '@/components/ButtonComponent';
+import PlayerInput from '@/components/PlayerInput';
+import PlayersList from '@/components/PlayerList';
+// Constants
+const MAX_PLAYERS = 19;
+const MIN_PLAYERS = 2;
 
 export default function PlayersSelectionScreen() {
   const router = useRouter();
@@ -22,201 +27,160 @@ export default function PlayersSelectionScreen() {
     areCategoriesSelected,
     resetScores,
   } = useGameStore();
-  const [newPlayerName, setNewPlayerName] = useState('');
 
-  const handleAddPlayer = () => {
-    if (players.length >= 19) {
-      Alert.alert('Limit graczy', 'Można dodać maksymalnie 19 graczy.');
-      return;
-    }
+  // Event handlers
+  const handleAddPlayer = useCallback(
+    (playerName: string) => {
+      addPlayer(playerName);
+    },
+    [addPlayer],
+  );
 
-    if (newPlayerName.trim()) {
-      addPlayer(newPlayerName.trim());
-      setNewPlayerName('');
-    }
-  };
+  const handleRemovePlayer = useCallback(
+    (playerId: string) => {
+      removePlayer(playerId);
+    },
+    [removePlayer],
+  );
 
-  const handleStartGame = () => {
-    if (players.length < 2) {
-      Alert.alert('Błąd', 'Dodaj co najmniej dwóch graczy');
+  const handleStartGame = useCallback(() => {
+    if (players.length < MIN_PLAYERS) {
+      Alert.alert(
+        'Not Enough Players',
+        `Add at least ${MIN_PLAYERS} players to start the game.`,
+      );
       return;
     }
 
     if (!areCategoriesSelected()) {
       Alert.alert(
-        'Uwaga',
-        'Nie wybrano żadnej kategorii. Przejdź do ustawień, aby wybrać kategorie.',
+        'No Categories Selected',
+        'Please go to settings and select game categories before starting.',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          {
+            text: 'Go to Settings',
+            onPress: () => router.push('/settings'),
+          },
+        ],
       );
       return;
     }
 
     router.push('/new-game');
-  };
+  }, [players.length, areCategoriesSelected, router]);
 
-  const renderPlayerItem = ({ item }: { item: Player }) => (
-    <View style={styles.playerItem}>
-      <Text style={styles.playerName}>{item.name}</Text>
-      <TouchableOpacity onPress={() => removePlayer(item.id)}>
-        <MaterialCommunityIcons name='delete' size={24} color='#F44336' />
-      </TouchableOpacity>
-    </View>
+  const handleResetScores = useCallback(() => {
+    Alert.alert(
+      'Reset All Scores',
+      'This will reset all player scores. This action cannot be undone.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Reset',
+          style: 'destructive',
+          onPress: resetScores,
+        },
+      ],
+    );
+  }, [resetScores]);
+
+  const handleGoHome = useCallback(() => {
+    router.push('/home');
+  }, [router]);
+
+  // Computed values
+  const canStartGame = useMemo(
+    () => players.length >= MIN_PLAYERS && areCategoriesSelected(),
+    [players.length, areCategoriesSelected],
   );
 
+  const startButtonTitle = useMemo(() => {
+    if (canStartGame) return 'Start Game';
+    const playersNeeded = MIN_PLAYERS - players.length;
+    return `Start Game (${playersNeeded} more needed)`;
+  }, [canStartGame, players.length]);
+
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Wybierz Graczy</Text>
-      </View>
+    <SafeAreaView style={styles.safeArea}>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
+      >
+        <View style={styles.header}>
+          <Text style={styles.title}>Select Players</Text>
+        </View>
 
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder='Nazwa gracza'
-          value={newPlayerName}
-          onChangeText={setNewPlayerName}
-          onSubmitEditing={handleAddPlayer}
+        <PlayerInput
+          onAddPlayer={handleAddPlayer}
+          existingPlayers={players}
+          maxPlayers={MAX_PLAYERS}
         />
 
-        <TouchableOpacity style={styles.addButton} onPress={handleAddPlayer}>
-          <MaterialCommunityIcons name='plus' size={24} color='white' />
-        </TouchableOpacity>
-      </View>
-
-      <FlatList
-        data={players}
-        renderItem={renderPlayerItem}
-        keyExtractor={(item) => item.id}
-        style={styles.playerList}
-        ListEmptyComponent={
-          <Text style={styles.emptyList}>
-            Brak graczy, dodaj swoją drużynę!
-          </Text>
-        }
-      />
-
-      <View style={styles.bottomActions}>
-        <ButtonComponent
-          title='Rozpocznij Grę'
-          variant='success'
-          iconName='play'
-          onPress={handleStartGame}
-          animation={{ press: true, pulse: false }}
-        />
-        <ButtonComponent
-          title='Wyjście'
-          variant='danger'
-          iconName='close'
-          onPress={() => router.push('/home')}
-          animation={{ press: true, pulse: false }}
+        <PlayersList
+          players={players}
+          onRemovePlayer={handleRemovePlayer}
+          maxPlayers={MAX_PLAYERS}
         />
 
-        {players.length > 0 && (
+        <View style={styles.bottomActions}>
           <ButtonComponent
-            title='Resetuj Wyniki'
-            iconName='refresh'
-            onPress={() => {
-              Alert.alert(
-                'Reset wyników',
-                'Czy na pewno chcesz zresetować wszystkie wyniki?',
-                [
-                  { text: 'Anuluj', style: 'cancel' },
-                  { text: 'Reset', onPress: resetScores },
-                ],
-              );
-            }}
-          ></ButtonComponent>
-        )}
-      </View>
-    </View>
+            title={startButtonTitle}
+            variant={canStartGame ? 'success' : 'secondary'}
+            iconName='play'
+            onPress={handleStartGame}
+            animation={{ press: true, pulse: false }}
+            disabled={!canStartGame}
+          />
+
+          {players.length > 0 && (
+            <ButtonComponent
+              title='Reset All Scores'
+              variant='warning'
+              iconName='refresh'
+              onPress={handleResetScores}
+              animation={{ press: true, pulse: false }}
+            />
+          )}
+
+          <ButtonComponent
+            title='Back to Home'
+            variant='danger'
+            iconName='home'
+            onPress={handleGoHome}
+            animation={{ press: true, pulse: false }}
+          />
+        </View>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+  },
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#FFFFFF',
   },
   header: {
     alignItems: 'center',
-    marginVertical: 40,
-    marginTop: 60,
+    marginVertical: 20,
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
     color: '#f4511e',
   },
-  inputContainer: {
-    flexDirection: 'row',
-    marginBottom: 20,
-  },
-  input: {
-    flex: 1,
-    height: 50,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 10,
-    paddingHorizontal: 15,
-    marginRight: 10,
-    fontSize: 16,
-  },
-  addButton: {
-    width: 50,
-    height: 50,
-    backgroundColor: '#4CAF50',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 10,
-  },
-  playerList: {
-    flex: 1,
-  },
-  playerItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 15,
-    paddingHorizontal: 20,
-    backgroundColor: '#F5F5F5',
-    borderRadius: 10,
-    marginBottom: 10,
-  },
-  playerName: {
-    fontSize: 18,
-  },
-  emptyList: {
-    textAlign: 'center',
-    fontSize: 16,
-    color: '#999',
-    marginTop: 30,
-  },
   bottomActions: {
     flexDirection: 'column',
     gap: 15,
     marginVertical: 20,
-  },
-  button: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 15,
-    borderRadius: 10,
-    gap: 10,
-  },
-  startButton: {
-    backgroundColor: '#4CAF50',
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  resetButton: {
-    backgroundColor: '#FF9800',
-    marginTop: 10,
-  },
-  backButton: {
-    backgroundColor: '#F44336',
+    paddingTop: 20,
+    borderTopWidth: 1,
+    borderTopColor: '#E0E0E0',
   },
 });
