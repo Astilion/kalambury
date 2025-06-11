@@ -56,14 +56,6 @@ export default function HomeScreen() {
           animation={{ pulse: true, press: true }}
         />
         <ButtonComponent
-          title='Ustawienia'
-          onPress={() => router.push('/settings')}
-          iconName='cog'
-          variant='primary'
-          size='medium'
-          animation={{ pulse: true, press: true }}
-        />
-        <ButtonComponent
           title='Reklamy On/Off'
           onPress={() => router.push('/ads' as any)}
           iconName='youtube-tv'
