@@ -25,6 +25,7 @@ interface GameState {
   wordChangesRemaining: number;
   categoryOptions: CategoryOption[];
   selectedCategoryId: string | null;
+  adsEnabled: boolean;
 
   loadCategories: () => Promise<void>;
   toggleCategory: (categoryId: string) => void;
@@ -39,6 +40,7 @@ interface GameState {
   areCategoriesSelected: () => boolean;
   generateCategoryOptions: () => void;
   selectCategory: (categoryId: string) => Promise<boolean>;
+  toggleAds: () => void;
 }
 
 export const useGameStore = create<GameState>()(
@@ -54,6 +56,7 @@ export const useGameStore = create<GameState>()(
       // Initialize new state variables
       categoryOptions: [],
       selectedCategoryId: null,
+      adsEnabled: true,
 
       loadCategories: async () => {
         set({ isLoading: true });
@@ -102,6 +105,10 @@ export const useGameStore = create<GameState>()(
           }, {} as Record<string, boolean>);
           return { selectedCategories: updated };
         }),
+      toggleAds: () =>
+        set((state) => ({
+          adsEnabled: !state.adsEnabled,
+        })),
       // Generate two random category options for the player to choose from
       generateCategoryOptions: () => {
         const state = get();
@@ -400,6 +407,7 @@ export const useGameStore = create<GameState>()(
       partialize: (state) => ({
         selectedCategories: state.selectedCategories,
         players: state.players,
+        adsEnabled: state.adsEnabled,
       }),
     },
   ),

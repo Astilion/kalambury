@@ -7,7 +7,13 @@ import ButtonComponent from '../../components/ButtonComponent';
 
 export default function HomeScreen() {
   const router = useRouter();
-  const { loadCategories, areCategoriesSelected, players } = useGameStore();
+  const {
+    loadCategories,
+    areCategoriesSelected,
+    players,
+    adsEnabled,
+    toggleAds,
+  } = useGameStore();
 
   useEffect(() => {
     loadCategories();
@@ -15,7 +21,6 @@ export default function HomeScreen() {
 
   const isCategoriesSelected = areCategoriesSelected();
   const hasEnoughPlayers = players.length >= 2;
-
   const isNewGameDisabled = !isCategoriesSelected || !hasEnoughPlayers;
 
   return (
@@ -55,15 +60,32 @@ export default function HomeScreen() {
           size='medium'
           animation={{ pulse: true, press: true }}
         />
+
+        {/* Ads Toggle using ButtonComponent */}
         <ButtonComponent
-          title='Reklamy On/Off'
-          onPress={() => router.push('/ads' as any)}
+          title={`Reklamy ${adsEnabled ? 'ON' : 'OFF'}`}
+          onPress={toggleAds}
           iconName='youtube-tv'
-          variant='primary'
+          variant={adsEnabled ? 'success' : 'secondary'}
           size='medium'
           animation={{ pulse: true, press: true }}
+          customColors={
+            adsEnabled
+              ? {
+                  background: '#4CAF50',
+                  backgroundActive: '#45a049',
+                  text: '#fff',
+                }
+              : {
+                  background: '#f5f5f5',
+                  backgroundActive: '#e0e0e0',
+                  text: '#666',
+                }
+          }
+          iconColor={adsEnabled ? '#fff' : '#666'}
         />
       </View>
+
       {!isCategoriesSelected && (
         <Text style={styles.warning}>
           Wybierz przynajmniej jedną kategorię, aby rozpocząć grę
