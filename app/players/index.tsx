@@ -53,17 +53,7 @@ export default function PlayersSelectionScreen() {
     }
 
     if (!areCategoriesSelected()) {
-      Alert.alert(
-        'No Categories Selected',
-        'Please go to settings and select game categories before starting.',
-        [
-          { text: 'Cancel', style: 'cancel' },
-          {
-            text: 'Go to Settings',
-            onPress: () => router.push('/settings'),
-          },
-        ],
-      );
+      Alert.alert('No Categories Selected');
       return;
     }
 
