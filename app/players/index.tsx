@@ -46,14 +46,14 @@ export default function PlayersSelectionScreen() {
   const handleStartGame = useCallback(() => {
     if (players.length < MIN_PLAYERS) {
       Alert.alert(
-        'Not Enough Players',
-        `Add at least ${MIN_PLAYERS} players to start the game.`,
+        'Za mało graczy',
+        `Dodaj conajmniej ${MIN_PLAYERS} graczy, aby wystartować grę.`,
       );
       return;
     }
 
     if (!areCategoriesSelected()) {
-      Alert.alert('No Categories Selected');
+      Alert.alert('Nie wybrano Kategorii');
       return;
     }
 
@@ -62,10 +62,10 @@ export default function PlayersSelectionScreen() {
 
   const handleResetScores = useCallback(() => {
     Alert.alert(
-      'Reset All Scores',
-      'This will reset all player scores. This action cannot be undone.',
+      'Zresetuj Wyniki',
+      'To zresetuje punktację. Nie będzie można tego cofnąć.',
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: 'anuluj', style: 'cancel' },
         {
           text: 'Reset',
           style: 'destructive',
@@ -86,9 +86,9 @@ export default function PlayersSelectionScreen() {
   );
 
   const startButtonTitle = useMemo(() => {
-    if (canStartGame) return 'Start Game';
+    if (canStartGame) return 'Rozpocznij Grę';
     const playersNeeded = MIN_PLAYERS - players.length;
-    return `Start Game (${playersNeeded} more needed)`;
+    return `Rozpocznij grę (Potrzeba Graczy: ${playersNeeded})`;
   }, [canStartGame, players.length]);
 
   return (
@@ -99,7 +99,7 @@ export default function PlayersSelectionScreen() {
         keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
       >
         <View style={styles.header}>
-          <Text style={styles.title}>Select Players</Text>
+          <Text style={styles.title}>Wybierz Graczy</Text>
         </View>
 
         <PlayerInput
@@ -126,7 +126,7 @@ export default function PlayersSelectionScreen() {
 
           {players.length > 0 && (
             <ButtonComponent
-              title='Reset All Scores'
+              title='Zresetuj Wyniki'
               variant='warning'
               iconName='refresh'
               onPress={handleResetScores}
@@ -135,7 +135,7 @@ export default function PlayersSelectionScreen() {
           )}
 
           <ButtonComponent
-            title='Back to Home'
+            title='Zamknij'
             variant='danger'
             iconName='home'
             onPress={handleGoHome}

@@ -22,7 +22,7 @@ export default function PlayersList({
   selectedPlayers = [],
 }: PlayersListProps) {
   const playersCountText = useMemo(
-    () => `${players.length}/${maxPlayers} players`,
+    () => `${players.length}/${maxPlayers} graczy`,
     [players.length, maxPlayers],
   );
 

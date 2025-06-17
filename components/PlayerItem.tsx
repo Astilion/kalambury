@@ -21,12 +21,12 @@ export default function PlayerItem({
 }: PlayerItemProps) {
   const handleRemove = () => {
     Alert.alert(
-      'Remove Player',
-      `Are you sure you want to remove ${player.name}?`,
+      'Usuń Gracza',
+      `Czy Na pewno chcesz usunąć Gracza: ${player.name}?`,
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: 'Anuluj', style: 'cancel' },
         {
-          text: 'Remove',
+          text: 'Usuń',
           style: 'destructive',
           onPress: () => onRemove(player.id),
         },
