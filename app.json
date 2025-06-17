@@ -15,7 +15,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.anonymous.Kalambury"
     },
     "web": {
       "bundler": "metro",
@@ -36,7 +37,8 @@
       [
         "react-native-google-mobile-ads",
         {
-          "androidAppId": "ca-app-pub-2129979945792882/9690225512"
+          "androidAppId": "ca-app-pub-2129979945792882~1234567890",
+          "iosAppId": "ca-app-pub-2129979945792882~1234567890"
         }
       ],
       "expo-sqlite"

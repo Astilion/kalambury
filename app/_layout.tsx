@@ -3,6 +3,8 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import { createTables, initializeDefaultData } from '@/utils/db';
 
+import mobileAds from 'react-native-google-mobile-ads';
+
 export default function RootLayout() {
   useEffect(() => {
     const initDatabase = async () => {
@@ -14,9 +16,20 @@ export default function RootLayout() {
         console.error('Error initializing database:', error);
       }
     };
-    
+
+    const initAds = async () => {
+      try {
+        const adapterStatuses = await mobileAds().initialize();
+        console.log('Google Mobile Ads initialized:', adapterStatuses);
+      } catch (error) {
+        console.error('Error initializing Google Mobile Ads:', error);
+      }
+    };
+
     initDatabase();
+    initAds();
   }, []);
+
   return (
     <>
       <Stack
