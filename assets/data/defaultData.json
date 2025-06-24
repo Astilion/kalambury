@@ -1,5 +1,6 @@
 {
   "Filmy": [
+    "Powrót do Przeszłości",
     "Matrix",
     "Titanic",
     "Gwiezdne Wojny",
@@ -99,6 +100,7 @@
     "Gwiazd naszych wina"
   ],
   "Zwierzęta": [
+    "Sarna",
     "Lew",
     "Tygrys",
     "Słoń",
@@ -392,6 +394,7 @@
     "Adwokat"
   ],
   "Jedzenie": [
+    "Sajgonki",
     "Pizza",
     "Hamburger",
     "Hot-dog",
@@ -495,6 +498,8 @@
     "Pizza hawajska"
   ],
   "Czynności": [
+    "Mieć końskie zdrowie",
+    "Zaparzyć Herbatę",
     "Bieganie",
     "Skakanie",
     "Pływanie",
@@ -598,6 +603,9 @@
     "Kręcenie filmiku"
   ],
   "Przedmioty": [
+    "Gry hazardowe",
+    "Żyletka", 
+    "Radiowóz",
     "Krzesło",
     "Stół",
     "Łóżko",
@@ -699,7 +707,9 @@
     "Notatnik",
     "Tablica",
     "Marker",
-    "Pudełko"
+    "Pudełko",
+    "Sklep z używaną odzieżą",
+    "Tablica korkowa"
   ],
   "Bajki": [
     "Królewna Śnieżka",
@@ -1024,6 +1034,22 @@
     "Tomek (lokomotywa)"
   ],
   "Przysłowia": [
+    "Bazgrać jak kura pazurem",
+    "Pocałunek Posejdona",
+    "Kropla drąży skałę",
+    "Odwracać kota ogonem",
+    "Po ptakach",
+    "Tłumaczyć jak Krowie na rowie",
+    "Dać po nosie",
+    "Głowa do góry",
+    "Przezorny, zawsze ubezpieczony",
+    "Gdzie diabeł mówi dobranoc",
+    "Stary a głupi",
+    "Święty spokój",
+    "Pogoda pod psem",
+    "Kropla w morzu potrzeb",
+    "Rzut beretem",
+    "Schodzić z Tematu",
     "Gdzie kucharek sześć, tam nie ma co jeść",
     "Lepszy wróbel w garści niż gołąb na dachu",
     "Co za dużo, to niezdrowo",
@@ -1357,5 +1383,14 @@
     "Myszka optyczna",
     "Zestaw stereo",
     "Zegarek elektroniczny"
+  ],
+  "Inne": [
+    "Wybory prezydenckie",
+    "Kopyto",
+    "Urząd Stanu Cywilnego",
+    "Kancelaria",
+    "Sejm",
+    "Senat"
+
   ]
 }
