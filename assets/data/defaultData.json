@@ -12,6 +12,7 @@
     "Psy",
     "Świat Według Kiepskich",
     "Pierwsza miłość",
+    "Miłość, szmaragd i krokodyl",
     "Akademia Pana Kleksa",
     "Rojst",
     "Helikopter w ogniu",
@@ -412,6 +413,9 @@
     "Adwokat"
   ],
   "Jedzenie": [
+    "Kopiec kreta",
+    "Kiszone ogórki",
+    "Kapusta kiszona",
     "Kakao",
     "Śniadanie",
     "Sajgonki",
@@ -622,6 +626,8 @@
     "Kręcenie filmiku"
   ],
   "Przedmioty": [
+    "Wysokie obcasy",
+    "Złoty pierścionek",
     "Słoik",
     "Piła",
     "Plakat",
@@ -1065,6 +1071,7 @@
     "Tomek (lokomotywa)"
   ],
   "Przysłowia": [
+    "Owijać w bawełnę",
     "Wąchać kwiatki od spodu",
     "Trafiła kosa na kamień",
     "Silny jak byk",
@@ -1449,6 +1456,8 @@
     "Krzyżacy",
     "Marskość Wątroby",
     "Garaż",
-    "Piekło"
+    "Piekło",
+    "Wolontariusz",
+    "Las iglasty"
   ]
 }
