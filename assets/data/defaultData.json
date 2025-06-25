@@ -1,5 +1,20 @@
 {
   "Filmy": [
+    "Straszny Film",
+    "Piła",
+    "Teksańska Masakra piłą mechaniczną",
+    "Krzyżacy",
+    "Chłopaki nie Płaczą",
+    "Poranek Kojota",
+    "Dzień świra",
+    "Listy do M",
+    "Rodzinka.pl",
+    "Psy",
+    "Świat Według Kiepskich",
+    "Pierwsza miłość",
+    "Akademia Pana Kleksa",
+    "Rojst",
+    "Helikopter w ogniu",
     "Powrót do Przeszłości",
     "Matrix",
     "Titanic",
@@ -42,7 +57,7 @@
     "Fantastyczne Zwierzęta",
     "Django",
     "Requiem dla snu",
-    "Fight Club",
+    "Fight Club (Podziemny Krąg)",
     "Czas Apokalipsy",
     "Sin City",
     "La La Land",
@@ -289,6 +304,9 @@
     "Jazda na monocyklu"
   ],
   "Zawody": [
+    "Informatyk",
+    "Programista",
+    "Piosenkarz",
     "Lekarz",
     "Pielęgniarka",
     "Nauczyciel",
@@ -394,6 +412,8 @@
     "Adwokat"
   ],
   "Jedzenie": [
+    "Kakao",
+    "Śniadanie",
     "Sajgonki",
     "Pizza",
     "Hamburger",
@@ -498,7 +518,6 @@
     "Pizza hawajska"
   ],
   "Czynności": [
-    "Mieć końskie zdrowie",
     "Zaparzyć Herbatę",
     "Bieganie",
     "Skakanie",
@@ -603,8 +622,19 @@
     "Kręcenie filmiku"
   ],
   "Przedmioty": [
+    "Słoik",
+    "Piła",
+    "Plakat",
+    "Strzykawka",
+    "Szafa grająca",
+    "Okulary do czytania",
+    "Skuter",
+    "Zwierciadło",
+    "Garnitur",
+    "Helikopter",
+    "Obrus",
     "Gry hazardowe",
-    "Żyletka", 
+    "Żyletka",
     "Radiowóz",
     "Krzesło",
     "Stół",
@@ -712,6 +742,7 @@
     "Tablica korkowa"
   ],
   "Bajki": [
+    "Muminki",
     "Królewna Śnieżka",
     "Kopciuszek",
     "Jaś i Małgosia",
@@ -1034,6 +1065,14 @@
     "Tomek (lokomotywa)"
   ],
   "Przysłowia": [
+    "Wąchać kwiatki od spodu",
+    "Trafiła kosa na kamień",
+    "Silny jak byk",
+    "Chodząca Encyklopedia",
+    "Syzyfowe Prace",
+    "Łączyć przyjemne z pożytecznym",
+    "Fachowiec od siedmiu boleści",
+    "Bój się Boga",
     "Bazgrać jak kura pazurem",
     "Pocałunek Posejdona",
     "Kropla drąży skałę",
@@ -1390,7 +1429,26 @@
     "Urząd Stanu Cywilnego",
     "Kancelaria",
     "Sejm",
-    "Senat"
-
+    "Senat",
+    "Błoto",
+    "Optymista",
+    "Świńska Grypa",
+    "Samotnik",
+    "Karmić Psa",
+    "Gradobice",
+    "Głowa domu",
+    "Głowa Rodziny",
+    "Stereotyp",
+    "Kiełbasa wyborcza",
+    "Wczasy nad morzem",
+    "Prestiż",
+    "Opcja Alternatywna",
+    "Dyktator",
+    "Chemia",
+    "Kolędnicy",
+    "Krzyżacy",
+    "Marskość Wątroby",
+    "Garaż",
+    "Piekło"
   ]
 }
