@@ -3,7 +3,20 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import { createTables, initializeDefaultData } from '@/utils/db';
 
-import mobileAds from 'react-native-google-mobile-ads';
+let mobileAds: any = null;
+let isGoogleAdsAvailable = false;
+
+try {
+  const GoogleMobileAds = require('react-native-google-mobile-ads');
+  mobileAds = GoogleMobileAds.default;
+  isGoogleAdsAvailable = true;
+} catch (error) {
+  console.log(
+    'Google Mobile Ads not available in RootLayout:',
+    error instanceof Error ? error.message : String(error),
+  );
+  isGoogleAdsAvailable = false;
+}
 
 export default function RootLayout() {
   useEffect(() => {
@@ -18,6 +31,13 @@ export default function RootLayout() {
     };
 
     const initAds = async () => {
+      if (!isGoogleAdsAvailable || !mobileAds) {
+        console.log(
+          'Skipping Google Mobile Ads initialization - module not available',
+        );
+        return;
+      }
+
       try {
         const adapterStatuses = await mobileAds().initialize();
         console.log('Google Mobile Ads initialized:', adapterStatuses);

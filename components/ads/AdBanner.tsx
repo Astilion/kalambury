@@ -1,20 +1,28 @@
 import React from 'react';
 import { View, StyleSheet, Text, Platform } from 'react-native';
 import { useGameStore } from '@/stores/gameStore';
-import Constants from 'expo-constants';
 
-// Check if Google Mobile Ads is available (simpler approach)
 let BannerAd: any = null;
 let BannerAdSize: any = null;
+let mobileAds: any = null;
 let isGoogleAdsAvailable = false;
 
 try {
+  // Try to import the module
   const GoogleMobileAds = require('react-native-google-mobile-ads');
   BannerAd = GoogleMobileAds.BannerAd;
   BannerAdSize = GoogleMobileAds.BannerAdSize;
-  isGoogleAdsAvailable = true;
+  mobileAds = GoogleMobileAds.default;
+
+  // Additional check to see if the native module is actually available
+  if (BannerAd && BannerAdSize && mobileAds) {
+    isGoogleAdsAvailable = true;
+  }
 } catch (error) {
-  console.log('Google Mobile Ads not available - showing placeholder');
+  console.log(
+    'Google Mobile Ads not available:',
+    error instanceof Error ? error.message : String(error),
+  );
   isGoogleAdsAvailable = false;
 }
 
@@ -32,20 +40,20 @@ const AdBanner: React.FC = () => {
   }
 
   // Show placeholder if Google Ads not available
-  if (!isGoogleAdsAvailable) {
+  if (!isGoogleAdsAvailable || !BannerAd || !BannerAdSize) {
     return (
       <View style={styles.adContainer}>
         <View style={styles.placeholderAd}>
           <Text style={styles.placeholderText}>📱 Ad Banner Placeholder</Text>
           <Text style={styles.placeholderSubText}>
-            (Ads will show in production build)
+            (Google Mobile Ads module not available)
           </Text>
         </View>
       </View>
     );
   }
 
-  // Show real ad in production/development build
+  // Show real ad when module is available
   return (
     <View style={styles.adContainer}>
       <BannerAd
@@ -57,8 +65,11 @@ const AdBanner: React.FC = () => {
         onAdLoaded={() => {
           console.log('Banner ad loaded successfully');
         }}
-        onAdFailedToLoad={(error: any) => {
-          console.log('Banner ad failed to load:', error);
+        onAdFailedToLoad={(error: unknown) => {
+          console.log(
+            'Banner ad failed to load:',
+            error instanceof Error ? error.message : String(error),
+          );
         }}
       />
     </View>
