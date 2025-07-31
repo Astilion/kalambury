@@ -8,10 +8,21 @@ import {
   StyleProp,
   ViewStyle,
   TextStyle,
+  Dimensions,
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 type IconName = React.ComponentProps<typeof MaterialCommunityIcons>['name'];
+
+const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
+
+// Screen size categories
+const getScreenSize = () => {
+  if (screenWidth < 360) return 'xs'; // Very small phones
+  if (screenWidth < 414) return 'sm'; // Small phones (iPhone SE, etc.)
+  if (screenWidth < 480) return 'md'; // Medium phones
+  return 'lg'; // Large phones and tablets
+};
 
 export interface ButtonProps {
   title: string;
@@ -52,6 +63,8 @@ export interface ButtonProps {
   iconPosition?: 'left' | 'right';
   iconSize?: number;
   iconColor?: string;
+  // Responsive options
+  responsiveScale?: boolean; // Enable/disable responsive scaling
 }
 
 const ButtonComponent: React.FC<ButtonProps> = ({
@@ -68,10 +81,27 @@ const ButtonComponent: React.FC<ButtonProps> = ({
   iconPosition = 'left',
   iconSize,
   iconColor,
+  responsiveScale = true,
 }) => {
   // Animation values
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const bgColorAnim = useRef(new Animated.Value(0)).current;
+
+  // Get responsive scale factor
+  const getScaleFactor = () => {
+    if (!responsiveScale) return 1;
+
+    const screenSize = getScreenSize();
+    const scaleFactors = {
+      xs: 0.75, // Very small phones - 75% size
+      sm: 0.85, // Small phones - 85% size
+      md: 0.95, // Medium phones - 95% size
+      lg: 1.0, // Large phones - 100% size
+    };
+    return scaleFactors[screenSize];
+  };
+
+  const scaleFactor = getScaleFactor();
 
   // Get colors based on variant
   const getVariantColors = () => {
@@ -129,36 +159,64 @@ const ButtonComponent: React.FC<ButtonProps> = ({
     disabled: customColors.disabled || '#a0a0a0',
   };
 
-  // Get size-based styles
+  // Get size-based styles with responsive scaling
   const getSizeStyles = () => {
-    const sizes = {
+    const baseSizes = {
       small: {
         paddingVertical: 8,
         paddingHorizontal: 16,
         borderRadius: 8,
         fontSize: 14,
         iconSize: 20,
+        minHeight: 40,
       },
       medium: {
-        paddingVertical: 14,
-        paddingHorizontal: 24,
-        borderRadius: 12,
-        fontSize: 18,
-        iconSize: 26,
+        paddingVertical: 12,
+        paddingHorizontal: 20,
+        borderRadius: 10,
+        fontSize: 16,
+        iconSize: 24,
+        minHeight: 56,
       },
       large: {
         paddingVertical: 16,
-        paddingHorizontal: 32,
-        borderRadius: 16,
-        fontSize: 20,
-        iconSize: 30,
+        paddingHorizontal: 24,
+        borderRadius: 12,
+        fontSize: 18,
+        iconSize: 28,
+        minHeight: 62,
       },
     };
 
-    return sizes[size];
+    const baseSize = baseSizes[size];
+
+    // Apply responsive scaling
+    return {
+      paddingVertical: Math.round(baseSize.paddingVertical * scaleFactor),
+      paddingHorizontal: Math.round(baseSize.paddingHorizontal * scaleFactor),
+      borderRadius: Math.round(baseSize.borderRadius * scaleFactor),
+      fontSize: Math.round(baseSize.fontSize * scaleFactor),
+      iconSize: Math.round(baseSize.iconSize * scaleFactor),
+      minHeight: Math.round(baseSize.minHeight * scaleFactor),
+    };
   };
 
   const sizeStyles = getSizeStyles();
+
+  // Calculate maximum width based on screen size
+  const getMaxWidth = () => {
+    if (fullWidth) return '100%';
+
+    const screenSize = getScreenSize();
+    const maxWidths = {
+      xs: Math.min(screenWidth - 40, 280), // Very small screens
+      sm: Math.min(screenWidth - 40, 320), // Small screens
+      md: Math.min(screenWidth - 40, 360), // Medium screens
+      lg: 400, // Large screens
+    };
+
+    return maxWidths[screenSize];
+  };
 
   // Pulse animation
   useEffect(() => {
@@ -233,8 +291,9 @@ const ButtonComponent: React.FC<ButtonProps> = ({
       style={[
         styles.buttonContainer,
         {
-          maxWidth: fullWidth ? '100%' : 300,
+          maxWidth: getMaxWidth(),
           transform: [{ scale: scaleAnim }],
+          marginVertical: Math.max(4, 8 * scaleFactor), // Responsive margin
         },
         customStyles.container,
       ]}
@@ -255,6 +314,7 @@ const ButtonComponent: React.FC<ButtonProps> = ({
               paddingVertical: sizeStyles.paddingVertical,
               paddingHorizontal: sizeStyles.paddingHorizontal,
               borderRadius: sizeStyles.borderRadius,
+              minHeight: sizeStyles.minHeight,
             },
             customStyles.button,
           ]}
@@ -270,6 +330,8 @@ const ButtonComponent: React.FC<ButtonProps> = ({
               },
               customStyles.text,
             ]}
+            numberOfLines={1}
+            adjustsFontSizeToFit
           >
             {title}
           </Text>
@@ -283,13 +345,12 @@ const ButtonComponent: React.FC<ButtonProps> = ({
 
 const styles = StyleSheet.create({
   buttonContainer: {
-    width: '100%',
-    marginVertical: 8,
-    elevation: 6,
+    width: '80%',
+    elevation: 4, // Reduced elevation for smaller screens
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.27,
-    shadowRadius: 4.65,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
     alignSelf: 'center',
   },
   pressableArea: {
@@ -299,7 +360,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    // Inner shadow effect
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.1)',
   },
@@ -310,9 +370,10 @@ const styles = StyleSheet.create({
     textShadowColor: 'rgba(0, 0, 0, 0.25)',
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 2,
+    flex: 1,
   },
   iconContainer: {
-    marginRight: 12,
+    marginHorizontal: 8, // Changed from marginRight to marginHorizontal
   },
 });
 
