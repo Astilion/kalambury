@@ -79,7 +79,6 @@ export default function PlayersSelectionScreen() {
     router.push('/home');
   }, [router]);
 
-  // Computed values
   const canStartGame = useMemo(
     () => players.length >= MIN_PLAYERS && areCategoriesSelected(),
     [players.length, areCategoriesSelected],
@@ -87,9 +86,18 @@ export default function PlayersSelectionScreen() {
 
   const startButtonTitle = useMemo(() => {
     if (canStartGame) return 'Rozpocznij Grę';
-    const playersNeeded = MIN_PLAYERS - players.length;
-    return `Rozpocznij grę (Potrzeba Graczy: ${playersNeeded})`;
-  }, [canStartGame, players.length]);
+
+    if (players.length < MIN_PLAYERS) {
+      const playersNeeded = MIN_PLAYERS - players.length;
+      return `Rozpocznij grę (Potrzeba graczy: ${playersNeeded})`;
+    }
+
+    if (!areCategoriesSelected()) {
+      return 'Rozpocznij grę (Wybierz kategorie)';
+    }
+
+    return 'Rozpocznij grę';
+  }, [canStartGame, players.length, areCategoriesSelected]);
 
   return (
     <SafeAreaView style={styles.safeArea}>
