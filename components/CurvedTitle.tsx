@@ -12,6 +12,9 @@ import React, { useEffect, useRef } from 'react';
 
 const { width: screenWidth } = Dimensions.get('window');
 
+// Created once - creating it inside the component would remount the SVG on every render
+const AnimatedSvg = Animated.createAnimatedComponent(Svg);
+
 export default function CurvedTitle() {
   const svgWidth = screenWidth;
   const svgHeight = 160;
@@ -22,7 +25,7 @@ export default function CurvedTitle() {
   const pulseAnim = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
-    Animated.loop(
+    const loop = Animated.loop(
       Animated.sequence([
         Animated.timing(pulseAnim, {
           toValue: 1.05,
@@ -35,10 +38,11 @@ export default function CurvedTitle() {
           useNativeDriver: true,
         }),
       ]),
-    ).start();
-  }, []);
+    );
+    loop.start();
 
-  const AnimatedSvg = Animated.createAnimatedComponent(Svg);
+    return () => loop.stop();
+  }, [pulseAnim]);
 
   return (
     <View
