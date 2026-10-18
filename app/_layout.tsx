@@ -1,7 +1,7 @@
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
-import { createTables, initializeDefaultData } from '@/utils/db';
+import { initDatabase } from '@/utils/db';
 
 type GoogleMobileAdsModule = typeof import('react-native-google-mobile-ads');
 
@@ -20,15 +20,6 @@ try {
 
 export default function RootLayout() {
   useEffect(() => {
-    const initDatabase = async () => {
-      try {
-        await createTables();
-        await initializeDefaultData();
-      } catch (error) {
-        console.error('Error initializing database:', error);
-      }
-    };
-
     const initAds = async () => {
       if (!isGoogleAdsAvailable || !mobileAds) {
         return;
@@ -41,6 +32,7 @@ export default function RootLayout() {
       }
     };
 
+    // Start seeding early; queries in utils/db also await it, so screens never read an empty DB
     initDatabase();
     initAds();
   }, []);
