@@ -11,6 +11,7 @@ import { useRouter } from 'expo-router';
 import CategoryItem from '../../components/CategoryItem';
 import MenuButton from '../../components/ButtonComponent';
 import { useGameStore } from '../../stores/gameStore';
+import { Category } from '@/types';
 
 // Get device dimensions
 const { width } = Dimensions.get('window');
@@ -42,17 +43,11 @@ export default function CategoriesScreen() {
   const areAllCategoriesSelected =
     Object.values(selectedCategories).every(Boolean);
 
-  // Define what our Category type looks like
-  interface CategoryType {
-    id: string;
-    name: string;
-  }
-
   const renderItem = ({
     item,
     index,
   }: {
-    item: CategoryType;
+    item: Category;
     index: number;
   }) => {
     // Check if item is undefined or doesn't have required properties

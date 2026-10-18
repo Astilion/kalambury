@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet } from 'react-native';
 import Header from './Header';
 import ButtonComponent from '../ButtonComponent';
-import { Player } from '@/stores/gameStore';
+import { Player } from '@/types';
 import { useGameStore } from '@/stores/gameStore';
 
 interface WordDisplayPhaseProps {

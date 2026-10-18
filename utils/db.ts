@@ -1,18 +1,9 @@
 import * as SQLite from 'expo-sqlite';
-import defaultData from '../assets/data/defaultData.json';
+import defaultData from '@/assets/data/defaultData.json';
+import { Category, Phrase } from '@/types';
 
 // Open database using the new API
 const db = SQLite.openDatabaseSync('kalambury.db');
-
-export type Phrase = {
-  id: number;
-  text: string;
-  category: string;
-};
-export type Category = {
-  id: string;
-  name: string;
-};
 
 // Create tables (async version)
 export const createTables = async () => {

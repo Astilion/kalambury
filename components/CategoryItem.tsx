@@ -1,12 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Category } from '@/types';
 
 interface CategoryItemProps {
-  category: {
-    id: string;
-    name: string;
-  };
+  category: Category;
   selected: boolean;
   onToggle: () => void;
 }

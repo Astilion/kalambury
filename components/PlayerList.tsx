@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
 import { View, Text, FlatList, StyleSheet } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { Player } from '@/stores/gameStore';
+import { Player } from '@/types';
 import PlayerItem from './PlayerItem';
 
 interface PlayersListProps {

@@ -9,7 +9,7 @@ import {
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useGameStore } from '@/stores/gameStore';
 import Header from '@/components/game/Header';
-import { Player } from '@/stores/gameStore';
+import { Player } from '@/types';
 
 interface ScoringPhaseProps {
   currentPlayer: Player | null;

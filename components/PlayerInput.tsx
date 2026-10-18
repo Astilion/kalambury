@@ -7,7 +7,7 @@ import {
   Alert,
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { Player } from '@/stores/gameStore';
+import { Player } from '@/types';
 
 interface PlayerInputProps {
   onAddPlayer: (name: string) => void;

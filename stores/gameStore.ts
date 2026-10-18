@@ -2,28 +2,18 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getCategories, getPhrasesByCategory } from '@/utils/db';
-
-export type Player = {
-  id: string;
-  name: string;
-  score: number;
-};
-
-export type CategoryOption = {
-  id: string;
-  name: string;
-};
+import { Category, Player } from '@/types';
 
 interface GameState {
   selectedCategories: Record<string, boolean>;
   toggleAllCategories: (enable: boolean) => void;
-  availableCategories: { id: string; name: string }[];
+  availableCategories: Category[];
   currentWord: string | null;
   players: Player[];
   activePlayer: number;
   isLoading: boolean;
   wordChangesRemaining: number;
-  categoryOptions: CategoryOption[];
+  categoryOptions: Category[];
   selectedCategoryId: string | null;
   adsEnabled: boolean;
 
