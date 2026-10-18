@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { useGameStore } from '@/stores/gameStore';
 import { getPhrasesByCategory } from '@/utils/db';
 import { Phrase } from '@/types';
