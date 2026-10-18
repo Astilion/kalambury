@@ -53,7 +53,7 @@ components/             # Reusable UI components
   ads/                  #   ad banner
 hooks/useGameLogic.tsx  # Round flow of the game screen (which phase is shown, handlers)
 stores/gameStore.ts     # Zustand store: players, turns, scores, categories, current phrase
-utils/db.ts             # SQLite access layer + seeding from assets/data/defaultData.json
+utils/db.ts             # SQLite access layer + versioned seeding from assets/data/defaultData.json
 utils/random.ts         # Fisher-Yates shuffle and random pick helpers
 types/                  # Shared TypeScript types
 constants/Colors.ts     # Color palette
@@ -66,6 +66,12 @@ Screen (app/new-game)  →  useGameLogic (round UI state)  →  gameStore (game 
 ```
 
 Screens stay mostly presentational, the round flow lives in a custom hook, and all game rules (turn order, scoring, drawing phrases) are in the store – which makes them easy to unit test without rendering any UI.
+
+### Phrase data versioning
+
+The phrase list ships as a JSON file and is copied into SQLite on the device. To make updates to that list reach existing installations, the database stores a data version in `PRAGMA user_version`. On startup, if it is lower than `DATA_VERSION` in `utils/db.ts`, the phrases are replaced in a single transaction (all or nothing). Every query awaits the same initialization promise, so no screen can read the database before it is ready.
+
+> When editing `assets/data/defaultData.json`, bump `DATA_VERSION`.
 
 ## Getting started
 
@@ -103,17 +109,20 @@ All of these checks run on every push and pull request in GitHub Actions.
 
 The test suite covers the game store and helpers: adding/removing players and keeping the correct active player, scoring, category selection, drawing phrases (including the retry when a category is empty), the word-change limit and passing the turn. The database layer and AsyncStorage are mocked.
 
+Separate tests cover the database layer against a mocked `expo-sqlite`: seeding when the data version is outdated, skipping it when up to date, initializing only once under concurrent calls, retrying after a failure and querying only after initialization.
+
 ## What I learned
 
 - Structuring a React Native app so that UI, flow logic and game rules are separated.
 - Managing global and persisted state with Zustand.
 - Working with a local SQLite database in a mobile app.
 - Writing unit tests – they caught a real bug in how the active player was updated after removing a player.
+- Evolving local data safely: versioning the SQLite seed data with `PRAGMA user_version`, and fixing a startup race where screens queried the database before it was initialized (child effects run before the parent's).
 - Preparing production builds with EAS (versioning, app icons, splash screen).
 
 ## Roadmap
 
-- [ ] Versioned phrase database (`PRAGMA user_version`) so that phrase fixes reach existing installations.
+- [x] Versioned phrase database (`PRAGMA user_version`) so that phrase fixes reach existing installations.
 - [ ] Round timer.
 - [ ] Custom, user-defined categories and phrases.
 - [ ] English language version.
