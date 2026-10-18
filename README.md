@@ -69,7 +69,7 @@ Screens stay mostly presentational, the round flow lives in a custom hook, and a
 
 ## Getting started
 
-**Requirements:** Node.js 20 LTS, npm, and either an Android emulator / iOS simulator or a physical device.
+**Requirements:** Node.js 22+ with npm 11, and either an Android emulator / iOS simulator or a physical device.
 
 ```bash
 git clone https://github.com/Astilion/kalambury.git
