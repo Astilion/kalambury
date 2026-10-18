@@ -15,7 +15,7 @@ export default function NewGameScreen() {
   const { isLoading } = useGameStore();
 
   const [
-    { showScore, categorySelectionStep, showFinalScores, selectingCategory },
+    { showScore, categorySelectionStep, showFinalScores },
     {
       handleChangeWord,
       handleEndRound,
@@ -32,12 +32,7 @@ export default function NewGameScreen() {
   const currentPlayer = getCurrentPlayer();
   const sortedPlayersByScore = getSortedPlayersByScore();
 
-  // Show loading indicator during category selection transition
-  if (selectingCategory) {
-    <LoadingIndicator />;
-  }
-
-  // Category selection UI
+  // Category selection UI (loading indicator is shown while a word is fetched)
   if (categorySelectionStep) {
     return (
       <View style={styles.container}>

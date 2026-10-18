@@ -25,7 +25,6 @@ export interface GameActions {
 export const useGameLogic = (): [GameState, GameActions] => {
   const router = useRouter();
   const {
-    currentWord,
     startNewGame,
     nextWord,
     players,
@@ -34,7 +33,6 @@ export const useGameLogic = (): [GameState, GameActions] => {
     changeWord,
     wordChangesRemaining,
     selectCategory,
-    isLoading,
     resetScores,
   } = useGameStore();
 
@@ -75,27 +73,17 @@ export const useGameLogic = (): [GameState, GameActions] => {
     setSelectingCategory(true);
 
     try {
-      useGameStore.setState({ currentWord: null });
-      await selectCategory(categoryId);
+      // selectCategory retries internally and reports whether a word was loaded
+      const success = await selectCategory(categoryId);
 
-      const latestState = useGameStore.getState();
-
-      if (latestState.currentWord) {
+      if (success) {
         setCategorySelectionStep(false);
       } else {
-        console.warn('First attempt failed, trying again');
-        await selectCategory(categoryId);
-
-        const secondAttemptState = useGameStore.getState();
-        if (secondAttemptState.currentWord) {
-          setCategorySelectionStep(false);
-        } else {
-          Alert.alert(
-            'Problem z hasłem',
-            'Nie udało się załadować hasła. Spróbuj inną kategorię.',
-            [{ text: 'OK' }],
-          );
-        }
+        Alert.alert(
+          'Problem z hasłem',
+          'Nie udało się załadować hasła. Spróbuj inną kategorię.',
+          [{ text: 'OK' }],
+        );
       }
     } catch (error) {
       console.error('Error selecting category:', error);

@@ -86,7 +86,7 @@ export default function CategoriesScreen() {
         <FlatList
           data={availableCategories?.filter(Boolean) || []}
           renderItem={renderItem}
-          keyExtractor={(item) => item?.id || Math.random().toString()}
+          keyExtractor={(item) => item.id}
           numColumns={COLUMN_COUNT}
           contentContainerStyle={styles.listContent}
           columnWrapperStyle={styles.columnsWrapper}

@@ -3,6 +3,7 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getCategories, getPhrasesByCategory } from '@/utils/db';
 import { Category, Player } from '@/types';
+import { pickRandom, shuffle } from '@/utils/random';
 
 interface GameState {
   selectedCategories: Record<string, boolean>;
@@ -112,12 +113,12 @@ export const useGameStore = create<GameState>()(
         if (activeCategories.length === 0) {
           activeCategories = state.availableCategories;
 
-          set((prevState) => ({
+          set({
             selectedCategories: state.availableCategories.reduce((acc, cat) => {
               acc[cat.id] = true;
               return acc;
             }, {} as Record<string, boolean>),
-          }));
+          });
         }
 
         // If we have only one category, just use that one
@@ -130,8 +131,7 @@ export const useGameStore = create<GameState>()(
         }
 
         // Choose two random categories
-        const shuffled = [...activeCategories].sort(() => 0.5 - Math.random());
-        const options = shuffled.slice(0, 2);
+        const options = shuffle(activeCategories).slice(0, 2);
 
         set({
           categoryOptions: options,
@@ -164,30 +164,18 @@ export const useGameStore = create<GameState>()(
               continue; // Try again if possible
             }
 
-            // Get random phrase
-            const randomPhraseIndex = Math.floor(
-              Math.random() * phrases.length,
-            );
-            const randomPhrase = phrases[randomPhraseIndex];
-
-            // Validate the phrase
-            if (!randomPhrase || !randomPhrase.text) {
+            const randomPhrase = pickRandom(phrases);
+            if (!randomPhrase?.text) {
               console.error('Invalid phrase selected');
               continue; // Try again if possible
             }
 
-            // Set the current word
             set({
               currentWord: randomPhrase.text,
               isLoading: false,
               wordChangesRemaining: 3,
             });
-
-            // Verify the word was actually set
-            const currentState = get();
-            if (currentState.currentWord) {
-              return true; // Success!
-            }
+            return true;
           } catch (error) {
             console.error(
               `Error selecting category (attempt ${attempts}):`,
@@ -217,18 +205,14 @@ export const useGameStore = create<GameState>()(
               state.selectedCategoryId,
             );
 
-            if (phrases.length === 0) {
+            const randomPhrase = pickRandom(phrases);
+            if (!randomPhrase) {
               console.warn(
                 `No phrases found for category: ${state.selectedCategoryId}`,
               );
               set({ isLoading: false });
               return;
             }
-
-            const randomPhraseIndex = Math.floor(
-              Math.random() * phrases.length,
-            );
-            const randomPhrase = phrases[randomPhraseIndex];
 
             set({
               currentWord: randomPhrase.text,
@@ -264,41 +248,28 @@ export const useGameStore = create<GameState>()(
             );
             activeCategories = allCategories;
 
-            set((prevState) => ({
+            set({
               selectedCategories: allCategories.reduce((acc, id) => {
                 acc[id] = true;
                 return acc;
               }, {} as Record<string, boolean>),
-            }));
+            });
           }
 
-          console.log('Active Categories:', activeCategories);
-
-          if (activeCategories.length === 0) {
+          const randomCategoryId = pickRandom(activeCategories);
+          if (!randomCategoryId) {
             console.warn('No categories selected');
             set({ isLoading: false });
             return;
           }
 
-          const randomCategoryIndex = Math.floor(
-            Math.random() * activeCategories.length,
-          );
-          const randomCategoryId = activeCategories[randomCategoryIndex];
-
-          console.log('Selected Category ID:', randomCategoryId);
-
           const phrases = await getPhrasesByCategory(randomCategoryId);
-
-          if (phrases.length === 0) {
+          const randomPhrase = pickRandom(phrases);
+          if (!randomPhrase) {
             console.warn(`No phrases found for category: ${randomCategoryId}`);
             set({ isLoading: false });
             return;
           }
-
-          const randomPhraseIndex = Math.floor(Math.random() * phrases.length);
-          const randomPhrase = phrases[randomPhraseIndex];
-
-          console.log('Selected Phrase:', randomPhrase);
 
           set({
             currentWord: randomPhrase.text,
@@ -321,18 +292,20 @@ export const useGameStore = create<GameState>()(
       },
 
       nextWord: async (guessingPlayerId?: string | null) => {
-        const state = get();
-        // Start a new game (generate new category options)
-        await state.startNewGame();
+        // Start a new round (generate new category options)
+        await get().startNewGame();
 
-        if (state.players.length <= 1) {
+        // Read state after the await so we don't act on a stale snapshot
+        const { players, activePlayer } = get();
+
+        if (players.length <= 1) {
           // If only one player or no players, just keep the same player
           return;
         }
 
         if (guessingPlayerId) {
           // If someone guessed correctly, find their index to make them the next player
-          const guessingPlayerIndex = state.players.findIndex(
+          const guessingPlayerIndex = players.findIndex(
             (player) => player.id === guessingPlayerId,
           );
           if (guessingPlayerIndex !== -1) {
@@ -343,17 +316,12 @@ export const useGameStore = create<GameState>()(
 
         // No one guessed correctly or guessingPlayerId not found
         // Choose a random player, but exclude the current one
-        const currentPlayerIndex = state.activePlayer;
-        const otherPlayerIndices = Array.from(
-          { length: state.players.length },
-          (_, i) => i,
-        ).filter((i) => i !== currentPlayerIndex);
+        const otherPlayerIndices = players
+          .map((_, i) => i)
+          .filter((i) => i !== activePlayer);
 
-        if (otherPlayerIndices.length > 0) {
-          const randomIndex = Math.floor(
-            Math.random() * otherPlayerIndices.length,
-          );
-          const nextPlayerIndex = otherPlayerIndices[randomIndex];
+        const nextPlayerIndex = pickRandom(otherPlayerIndices);
+        if (nextPlayerIndex !== undefined) {
           set({ activePlayer: nextPlayerIndex });
         }
       },
