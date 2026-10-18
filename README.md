@@ -1,5 +1,7 @@
 # Kalambury – Charades Party Game
 
+[![CI](https://github.com/Astilion/kalambury/actions/workflows/ci.yml/badge.svg)](https://github.com/Astilion/kalambury/actions/workflows/ci.yml)
+
 A mobile charades game for parties and family evenings, built with **React Native (Expo)** and **TypeScript**.
 Players take turns acting out a phrase while the others try to guess it – the app picks the phrases, tracks whose turn it is and keeps the score.
 
@@ -26,15 +28,15 @@ Players take turns acting out a phrase while the others try to guess it – the 
 
 ## Tech stack
 
-| Technology | Why |
-| --- | --- |
-| **Expo SDK 53 / React Native 0.79** | One codebase for Android and iOS, fast iteration and cloud builds with EAS. |
-| **TypeScript** (`strict`) | Type safety for game state and component props. |
-| **Expo Router** | File-based navigation – every screen is a file in `app/`. |
-| **Zustand** + `persist` middleware | Lightweight global state without the boilerplate of Redux/Context. Only players, selected categories and settings are persisted to AsyncStorage (`partialize`). |
-| **expo-sqlite** | Phrases are seeded from a JSON file into SQLite on first launch and queried per category with parameterized queries. |
-| **Jest** (`jest-expo`) | Unit tests for the game logic. |
-| **react-native-google-mobile-ads** | Banner ads with a graceful fallback when the native module is unavailable (e.g. in Expo Go). |
+| Technology                          | Why                                                                                                                                                             |
+| ----------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Expo SDK 53 / React Native 0.79** | One codebase for Android and iOS, fast iteration and cloud builds with EAS.                                                                                     |
+| **TypeScript** (`strict`)           | Type safety for game state and component props.                                                                                                                 |
+| **Expo Router**                     | File-based navigation – every screen is a file in `app/`.                                                                                                       |
+| **Zustand** + `persist` middleware  | Lightweight global state without the boilerplate of Redux/Context. Only players, selected categories and settings are persisted to AsyncStorage (`partialize`). |
+| **expo-sqlite**                     | Phrases are seeded from a JSON file into SQLite on first launch and queried per category with parameterized queries.                                            |
+| **Jest** (`jest-expo`)              | Unit tests for the game logic.                                                                                                                                  |
+| **react-native-google-mobile-ads**  | Banner ads with a graceful fallback when the native module is unavailable (e.g. in Expo Go).                                                                    |
 
 ## Architecture
 
@@ -87,12 +89,17 @@ Or build and run a **development build** with all native modules:
 npx expo run:android   # or: npx expo run:ios
 ```
 
-## Tests
+## Tests and code quality
 
 ```bash
-npm test             # single run
-npm run test:watch   # watch mode
+npm test             # unit tests (single run)
+npm run test:watch   # unit tests in watch mode
+npm run typecheck    # TypeScript
+npm run lint         # ESLint (eslint-config-expo)
+npm run format       # Prettier
 ```
+
+All of these checks run on every push and pull request in GitHub Actions.
 
 The test suite covers the game store and helpers: adding/removing players and keeping the correct active player, scoring, category selection, drawing phrases (including the retry when a category is empty), the word-change limit and passing the turn. The database layer and AsyncStorage are mocked.
 
