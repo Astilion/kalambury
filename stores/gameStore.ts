@@ -341,16 +341,23 @@ export const useGameStore = create<GameState>()(
           ],
         })),
       removePlayer: (id: string) =>
-        set((state) => ({
-          players: state.players.filter((player) => player.id !== id),
-          // Reset active player if the current active player is removed
-          activePlayer:
-            state.players.findIndex((p) => p.id === id) === state.activePlayer
-              ? 0
-              : state.activePlayer >= state.players.length - 1
-              ? 0
-              : state.activePlayer,
-        })),
+        set((state) => {
+          const removedIndex = state.players.findIndex((p) => p.id === id);
+          if (removedIndex === -1) return {};
+
+          const players = state.players.filter((player) => player.id !== id);
+          let activePlayer = state.activePlayer;
+
+          if (removedIndex < activePlayer) {
+            // Shift left so the same person keeps the turn
+            activePlayer -= 1;
+          } else if (activePlayer >= players.length) {
+            // The removed player was last in the list and had the turn
+            activePlayer = 0;
+          }
+
+          return { players, activePlayer };
+        }),
       resetScores: () =>
         set((state) => ({
           players: state.players.map((player) => ({ ...player, score: 0 })),
