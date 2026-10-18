@@ -19,7 +19,7 @@ export default function HomeScreen() {
 
   useEffect(() => {
     loadCategories();
-  }, []);
+  }, [loadCategories]);
 
   const isCategoriesSelected = areCategoriesSelected();
   const hasEnoughPlayers = players.length >= 2;

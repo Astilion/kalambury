@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     flex: 1,
     paddingRight: 8,
-    flexWrap: 'wrap', 
+    flexWrap: 'wrap',
   },
   selectedText: {
     color: Colors.info,
@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
   iconContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    marginLeft: 4, 
+    marginLeft: 4,
     width: 28,
   },
 });

@@ -14,7 +14,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 type IconName = React.ComponentProps<typeof MaterialCommunityIcons>['name'];
 
-const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
+const { width: screenWidth } = Dimensions.get('window');
 
 // Screen size categories
 const getScreenSize = () => {
@@ -242,7 +242,7 @@ const ButtonComponent: React.FC<ButtonProps> = ({
         pulseAnimation.stop();
       };
     }
-  }, [disabled, animation.pulse]);
+  }, [disabled, animation.pulse, animation.duration, bgColorAnim]);
 
   const handlePressIn = () => {
     if (animation.press) {

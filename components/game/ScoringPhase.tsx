@@ -33,7 +33,7 @@ export default function ScoringPhase({
 
       <View style={styles.compactWordContainer}>
         {currentWord && (
-          <Text style={styles.compactWord}>Hasło: "{currentWord}"</Text>
+          <Text style={styles.compactWord}>Hasło: „{currentWord}”</Text>
         )}
       </View>
 

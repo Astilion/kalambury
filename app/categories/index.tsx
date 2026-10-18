@@ -34,23 +34,13 @@ export default function CategoriesScreen() {
 
   // Load categories when component mounts
   useEffect(() => {
-    try {
-      loadCategories();
-    } catch (error) {
-      console.error('Error loading categories:', error);
-    }
-  }, []);
+    loadCategories();
+  }, [loadCategories]);
 
   const areAllCategoriesSelected =
     Object.values(selectedCategories).every(Boolean);
 
-  const renderItem = ({
-    item,
-    index,
-  }: {
-    item: Category;
-    index: number;
-  }) => {
+  const renderItem = ({ item, index }: { item: Category; index: number }) => {
     // Check if item is undefined or doesn't have required properties
     if (!item || !item.id) {
       console.warn('Encountered invalid category item', item);

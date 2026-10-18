@@ -53,7 +53,7 @@ export const useGameLogic = (): [GameState, GameActions] => {
       setShowFinalScores(false);
       setSelectingCategory(false);
     };
-  }, []);
+  }, [resetScores, startNewGame]);
 
   const handleChangeWord = () => {
     if (wordChangesRemaining > 0) {

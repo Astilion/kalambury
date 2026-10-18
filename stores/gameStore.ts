@@ -58,10 +58,13 @@ export const useGameStore = create<GameState>()(
             const currentSelectedCategories =
               Object.keys(state.selectedCategories).length > 0
                 ? state.selectedCategories
-                : categories.reduce((acc, category) => {
-                    acc[category.id] = true;
-                    return acc;
-                  }, {} as Record<string, boolean>);
+                : categories.reduce(
+                    (acc, category) => {
+                      acc[category.id] = true;
+                      return acc;
+                    },
+                    {} as Record<string, boolean>,
+                  );
 
             return {
               availableCategories: categories,
@@ -89,10 +92,13 @@ export const useGameStore = create<GameState>()(
       },
       toggleAllCategories: (enable: boolean) =>
         set((state) => {
-          const updated = state.availableCategories.reduce((acc, category) => {
-            acc[category.id] = enable;
-            return acc;
-          }, {} as Record<string, boolean>);
+          const updated = state.availableCategories.reduce(
+            (acc, category) => {
+              acc[category.id] = enable;
+              return acc;
+            },
+            {} as Record<string, boolean>,
+          );
           return { selectedCategories: updated };
         }),
       toggleAds: () =>
@@ -113,10 +119,13 @@ export const useGameStore = create<GameState>()(
           activeCategories = state.availableCategories;
 
           set({
-            selectedCategories: state.availableCategories.reduce((acc, cat) => {
-              acc[cat.id] = true;
-              return acc;
-            }, {} as Record<string, boolean>),
+            selectedCategories: state.availableCategories.reduce(
+              (acc, cat) => {
+                acc[cat.id] = true;
+                return acc;
+              },
+              {} as Record<string, boolean>,
+            ),
           });
         }
 
@@ -248,10 +257,13 @@ export const useGameStore = create<GameState>()(
             activeCategories = allCategories;
 
             set({
-              selectedCategories: allCategories.reduce((acc, id) => {
-                acc[id] = true;
-                return acc;
-              }, {} as Record<string, boolean>),
+              selectedCategories: allCategories.reduce(
+                (acc, id) => {
+                  acc[id] = true;
+                  return acc;
+                },
+                {} as Record<string, boolean>,
+              ),
             });
           }
 

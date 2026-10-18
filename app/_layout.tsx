@@ -10,10 +10,11 @@ let isGoogleAdsAvailable = false;
 
 try {
   // The native module is missing in Expo Go, so require it lazily
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   const GoogleMobileAds: GoogleMobileAdsModule = require('react-native-google-mobile-ads');
   mobileAds = GoogleMobileAds.default;
   isGoogleAdsAvailable = true;
-} catch (error) {
+} catch {
   isGoogleAdsAvailable = false;
 }
 

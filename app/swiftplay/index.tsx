@@ -12,7 +12,7 @@ export default function SwiftPlayScreen() {
   useEffect(() => {
     startNewGame();
     getRandomWord();
-  }, []);
+  }, [startNewGame, getRandomWord]);
 
   const handleNextPhrase = () => {
     getRandomWord();
