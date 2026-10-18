@@ -3,8 +3,9 @@ import { View, StyleSheet, Text } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useGameStore } from '@/stores/gameStore';
 import CurvedTitle from '@/components/CurvedTitle';
-import ButtonComponent from '../../components/ButtonComponent';
+import ButtonComponent from '@/components/ButtonComponent';
 import AdBanner from '@/components/ads/AdBanner';
+import { Colors } from '@/constants/Colors';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -56,7 +57,7 @@ export default function HomeScreen() {
           />
           <ButtonComponent
             title='Wybór Graczy'
-            onPress={() => router.push('/players' as any)}
+            onPress={() => router.push('/players')}
             iconName='account-group'
             variant='primary'
             size='medium'
@@ -73,17 +74,17 @@ export default function HomeScreen() {
             customColors={
               adsEnabled
                 ? {
-                    background: '#4CAF50',
+                    background: Colors.success,
                     backgroundActive: '#45a049',
-                    text: '#fff',
+                    text: Colors.white,
                   }
                 : {
-                    background: '#f5f5f5',
-                    backgroundActive: '#e0e0e0',
-                    text: '#666',
+                    background: Colors.surface,
+                    backgroundActive: Colors.border,
+                    text: Colors.textSecondary,
                   }
             }
-            iconColor={adsEnabled ? '#fff' : '#666'}
+            iconColor={adsEnabled ? Colors.white : Colors.textSecondary}
           />
         </View>
 
@@ -107,7 +108,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.white,
   },
   contentContainer: {
     flex: 1,
@@ -118,7 +119,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 42,
     fontWeight: 'bold',
-    color: '#f4511e',
+    color: Colors.primary,
     marginBottom: 40,
   },
   menuContainer: {
@@ -128,7 +129,7 @@ const styles = StyleSheet.create({
   },
   warning: {
     marginTop: 20,
-    color: '#e53935',
+    color: Colors.danger,
     fontSize: 14,
     textAlign: 'center',
   },

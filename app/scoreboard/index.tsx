@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useGameStore } from '@/stores/gameStore';
 import ButtonComponent from '@/components/ButtonComponent';
+import { Colors } from '@/constants/Colors';
 
 export default function ScoreboardScreen() {
   const router = useRouter();
@@ -48,7 +49,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.white,
   },
   header: {
     alignItems: 'center',
@@ -58,7 +59,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#f4511e',
+    color: Colors.primary,
   },
   playerList: {
     flex: 1,
@@ -68,7 +69,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 15,
     paddingHorizontal: 20,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: Colors.surface,
     borderRadius: 10,
     marginBottom: 10,
   },
@@ -76,7 +77,7 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     borderRadius: 15,
-    backgroundColor: '#f4511e',
+    backgroundColor: Colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 15,
@@ -93,12 +94,12 @@ const styles = StyleSheet.create({
   playerScore: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: '#4CAF50',
+    color: Colors.success,
   },
   emptyList: {
     textAlign: 'center',
     fontSize: 16,
-    color: '#999',
+    color: Colors.textMuted,
     marginTop: 30,
   },
   bottomActions: {
@@ -114,7 +115,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   backButton: {
-    backgroundColor: '#2196F3',
+    backgroundColor: Colors.info,
   },
   buttonText: {
     color: 'white',

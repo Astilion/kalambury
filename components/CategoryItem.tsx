@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Category } from '@/types';
+import { Colors } from '@/constants/Colors';
 
 interface CategoryItemProps {
   category: Category;
@@ -27,7 +28,7 @@ const CategoryItem: React.FC<CategoryItemProps> = ({
         selected ? styles.selected : styles.unselected,
       ]}
       onPress={onToggle}
-      android_ripple={{ color: selected ? '#BBDEFB' : '#E0E0E0' }}
+      android_ripple={{ color: selected ? '#BBDEFB' : Colors.border }}
     >
       <Text
         style={[
@@ -37,13 +38,13 @@ const CategoryItem: React.FC<CategoryItemProps> = ({
         numberOfLines={2}
         ellipsizeMode='tail'
       >
-        {category.name || 'Unnamed Category'}
+        {category.name || 'Bez nazwy'}
       </Text>
       <View style={styles.iconContainer}>
         <MaterialCommunityIcons
           name={selected ? 'check-circle' : 'circle-outline'}
           size={24}
-          color={selected ? '#4CAF50' : '#757575'}
+          color={selected ? Colors.success : '#757575'}
         />
       </View>
     </Pressable>
@@ -59,20 +60,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 8,
     minHeight: 70,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: Colors.surface,
     borderWidth: 1,
-    borderColor: '#E0E0E0',
+    borderColor: Colors.border,
   },
   pressed: {
     opacity: 0.8,
   },
   selected: {
     backgroundColor: '#E3F2FD',
-    borderColor: '#2196F3',
+    borderColor: Colors.info,
   },
   unselected: {
-    backgroundColor: '#F5F5F5',
-    borderColor: '#E0E0E0',
+    backgroundColor: Colors.surface,
+    borderColor: Colors.border,
   },
   name: {
     fontSize: 16,
@@ -82,7 +83,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap', 
   },
   selectedText: {
-    color: '#2196F3',
+    color: Colors.info,
   },
   unselectedText: {
     color: '#757575',

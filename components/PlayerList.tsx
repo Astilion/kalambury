@@ -2,7 +2,8 @@ import React, { useCallback, useMemo } from 'react';
 import { View, Text, FlatList, StyleSheet } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Player } from '@/types';
-import PlayerItem from './PlayerItem';
+import PlayerItem from '@/components/PlayerItem';
+import { Colors } from '@/constants/Colors';
 
 interface PlayersListProps {
   players: Player[];
@@ -101,7 +102,7 @@ const styles = StyleSheet.create({
   emptyText: {
     textAlign: 'center',
     fontSize: 16,
-    color: '#999',
+    color: Colors.textMuted,
     marginTop: 16,
     lineHeight: 24,
   },
@@ -111,7 +112,7 @@ const styles = StyleSheet.create({
   },
   playersCount: {
     fontSize: 14,
-    color: '#666',
+    color: Colors.textSecondary,
     fontWeight: '500',
   },
 });

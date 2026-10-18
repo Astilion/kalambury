@@ -10,6 +10,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useGameStore } from '@/stores/gameStore';
 import Header from '@/components/game/Header';
 import { Player } from '@/types';
+import { Colors } from '@/constants/Colors';
 
 interface ScoringPhaseProps {
   currentPlayer: Player | null;
@@ -87,7 +88,7 @@ const styles = StyleSheet.create({
   compactWordContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5F5F5',
+    backgroundColor: Colors.surface,
     borderRadius: 15,
     padding: 12,
     marginBottom: 15,
@@ -96,7 +97,7 @@ const styles = StyleSheet.create({
   compactWord: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: '#333',
+    color: Colors.text,
     textAlign: 'center',
   },
   scoreContainer: {
@@ -107,7 +108,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 20,
-    color: '#333',
+    color: Colors.text,
   },
   playerButtonsScrollView: {
     maxHeight: 600,
@@ -119,7 +120,7 @@ const styles = StyleSheet.create({
     paddingBottom: 15,
   },
   playerScoreButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: Colors.success,
     paddingVertical: 15,
     paddingHorizontal: 10,
     borderRadius: 10,
@@ -170,7 +171,7 @@ const styles = StyleSheet.create({
   noPlayers: {
     textAlign: 'center',
     fontSize: 16,
-    color: '#999',
+    color: Colors.textMuted,
     marginBottom: 20,
   },
 });

@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useGameStore } from '@/stores/gameStore';
 import ButtonComponent from '@/components/ButtonComponent';
+import { Colors } from '@/constants/Colors';
 
 export default function SwiftPlayScreen() {
   const router = useRouter();
@@ -60,7 +61,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.white,
   },
   header: {
     alignItems: 'center',
@@ -70,13 +71,13 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#f4511e',
+    color: Colors.primary,
     marginBottom: 10,
   },
   wordContainer: {
     flex: 0.6,
     justifyContent: 'center',
-    backgroundColor: '#F5F5F5',
+    backgroundColor: Colors.surface,
     borderRadius: 15,
     padding: 20,
     marginBottom: 30,
@@ -89,14 +90,14 @@ const styles = StyleSheet.create({
   word: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#333',
+    color: Colors.text,
     textAlign: 'center',
     flexWrap: 'wrap',
     width: '100%',
   },
   noWord: {
     fontSize: 20,
-    color: '#999',
+    color: Colors.textMuted,
     textAlign: 'center',
   },
   actionsContainer: {

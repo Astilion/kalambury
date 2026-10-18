@@ -7,7 +7,8 @@ import {
   View,
   StyleSheet,
 } from 'react-native';
-import ButtonComponent from '../ButtonComponent';
+import ButtonComponent from '@/components/ButtonComponent';
+import { Colors } from '@/constants/Colors';
 
 interface Player {
   id: string;
@@ -86,7 +87,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
-    color: '#f4511e',
+    color: Colors.primary,
     marginBottom: 20,
   },
   scoresList: {
@@ -109,16 +110,16 @@ const styles = StyleSheet.create({
   playerScoreName: {
     fontSize: 18,
     flex: 1,
-    color: '#333',
+    color: Colors.text,
   },
   playerScorePoints: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#4CAF50',
+    color: Colors.success,
     width: 60,
     textAlign: 'right',
   },
   returnButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: Colors.success,
   },
 });

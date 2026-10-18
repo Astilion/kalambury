@@ -9,6 +9,7 @@ import LoadingIndicator from '@/components/LoadingIndicator';
 import CategorySelectionPhase from '@/components/game/CategorySelectionPhase';
 import DisplayPhase from '@/components/game/DisplayPhase';
 import ScoringPhase from '@/components/game/ScoringPhase';
+import { Colors } from '@/constants/Colors';
 
 export default function NewGameScreen() {
   const router = useRouter();
@@ -90,6 +91,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.white,
   },
 });

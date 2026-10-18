@@ -2,8 +2,9 @@ import React from 'react';
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { useGameStore } from '@/stores/gameStore';
 import ButtonComponent from '@/components/ButtonComponent';
-import Header from './Header';
+import Header from '@/components/game/Header';
 import { Player } from '@/types';
+import { Colors } from '@/constants/Colors';
 
 interface CategorySelectionPhaseProps {
   currentPlayer: Player | null;
@@ -26,7 +27,7 @@ export default function CategorySelectionPhase({
 
       {isLoading ? (
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size='large' color='#f4511e' />
+          <ActivityIndicator size='large' color={Colors.primary} />
           <Text style={styles.loadingText}>Wczytywanie kategorii...</Text>
         </View>
       ) : (
@@ -74,12 +75,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 20,
-    color: '#333',
+    color: Colors.text,
   },
   noCategories: {
     textAlign: 'center',
     fontSize: 16,
-    color: '#999',
+    color: Colors.textMuted,
     marginTop: 30,
   },
   loadingContainer: {
@@ -90,6 +91,6 @@ const styles = StyleSheet.create({
   loadingText: {
     marginTop: 10,
     fontSize: 16,
-    color: '#666',
+    color: Colors.textSecondary,
   },
 });

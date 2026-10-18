@@ -1,8 +1,8 @@
-// components/PlayerItem.tsx
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Player } from '@/types';
+import { Colors } from '@/constants/Colors';
 
 interface PlayerItemProps {
   player: Player;
@@ -65,11 +65,11 @@ export default function PlayerItem({
       <TouchableOpacity
         onPress={handleRemove}
         style={styles.deleteButton}
-        accessibilityLabel={`Remove player ${player.name}`}
+        accessibilityLabel={`Usuń gracza ${player.name}`}
         accessibilityRole='button'
         hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
       >
-        <MaterialCommunityIcons name='delete' size={24} color='#F44336' />
+        <MaterialCommunityIcons name='delete' size={24} color={Colors.danger} />
       </TouchableOpacity>
     </TouchableOpacity>
   );
@@ -84,11 +84,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: 15,
     paddingHorizontal: 20,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: Colors.surface,
     borderRadius: 10,
     marginBottom: 10,
     elevation: 1,
-    shadowColor: '#000',
+    shadowColor: Colors.black,
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 2,
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
   selectedContainer: {
     backgroundColor: '#E3F2FD',
     borderWidth: 2,
-    borderColor: '#2196F3',
+    borderColor: Colors.info,
   },
   playerInfo: {
     flex: 1,
@@ -104,12 +104,12 @@ const styles = StyleSheet.create({
   },
   playerName: {
     fontSize: 18,
-    color: '#333',
+    color: Colors.text,
     fontWeight: '500',
   },
   playerScore: {
     fontSize: 14,
-    color: '#666',
+    color: Colors.textSecondary,
     marginTop: 2,
   },
   selectedText: {

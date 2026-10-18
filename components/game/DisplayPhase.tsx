@@ -1,8 +1,9 @@
 import { View, Text, StyleSheet } from 'react-native';
-import Header from './Header';
-import ButtonComponent from '../ButtonComponent';
+import Header from '@/components/game/Header';
+import ButtonComponent from '@/components/ButtonComponent';
 import { Player } from '@/types';
 import { useGameStore } from '@/stores/gameStore';
+import { Colors } from '@/constants/Colors';
 
 interface WordDisplayPhaseProps {
   currentPlayer: Player | null;
@@ -92,19 +93,19 @@ const styles = StyleSheet.create({
   word: {
     fontSize: 26,
     fontWeight: 'bold',
-    color: '#333',
+    color: Colors.text,
     textAlign: 'center',
     flexWrap: 'wrap',
   },
   noWord: {
     fontSize: 20,
-    color: '#999',
+    color: Colors.textMuted,
     textAlign: 'center',
   },
   changesRemaining: {
     marginTop: 10,
     fontSize: 16,
-    color: '#666',
+    color: Colors.textSecondary,
   },
   actionsContainer: {
     flexDirection: 'column',

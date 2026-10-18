@@ -23,7 +23,6 @@ export const createTables = async () => {
             name TEXT NOT NULL
             );
             `);
-    console.log('✅ Tables created');
   } catch (error) {
     console.error('❌ Error creating table:', error);
   }
@@ -37,7 +36,6 @@ export const insertPhrase = async (text: string, category: string) => {
       text,
       category,
     );
-    console.log('✅ Phrase inserted');
   } catch (error) {
     console.error('❌ Error inserting phrase:', error);
   }
@@ -51,7 +49,6 @@ export const insertCategory = async (id: string, name: string) => {
       id,
       name,
     );
-    console.log('✅ Category inserted');
   } catch (error) {
     console.error('❌ Error inserting category:', error);
   }
@@ -102,15 +99,7 @@ export const getCategories = async (): Promise<Category[]> => {
 export const initializeDefaultData = async () => {
   try {
     const categories = await getCategories();
-    
-    // if (categories.length > 0) {
-    //   console.log('✅ Clearing old data');
-    //   await db.execAsync('DELETE FROM phrases;');
-    //   await db.execAsync('DELETE FROM categories;');
-    // }
-
     if (categories.length > 0) {
-      console.log('✅ Database already initialized');
       return;
     }
 
@@ -120,8 +109,6 @@ export const initializeDefaultData = async () => {
         await insertPhrase(phrase, category);
       }
     }
-
-    console.log('✅ Default data initialized');
   } catch (error) {
     console.error('❌ Error initializing default data:', error);
   }

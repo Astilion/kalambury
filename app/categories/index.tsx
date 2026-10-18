@@ -8,10 +8,11 @@ import {
   Dimensions,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import CategoryItem from '../../components/CategoryItem';
-import MenuButton from '../../components/ButtonComponent';
-import { useGameStore } from '../../stores/gameStore';
+import CategoryItem from '@/components/CategoryItem';
+import ButtonComponent from '@/components/ButtonComponent';
+import { useGameStore } from '@/stores/gameStore';
 import { Category } from '@/types';
+import { Colors } from '@/constants/Colors';
 
 // Get device dimensions
 const { width } = Dimensions.get('window');
@@ -79,7 +80,7 @@ export default function CategoriesScreen() {
       <Text style={styles.title}>Wybierz Kategorie</Text>
       {isLoading ? (
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size='large' color='#0000ff' />
+          <ActivityIndicator size='large' color={Colors.primary} />
           <Text style={styles.loadingText}>Ładowanie...</Text>
         </View>
       ) : (
@@ -93,12 +94,12 @@ export default function CategoriesScreen() {
           style={styles.list}
           ListEmptyComponent={
             <Text style={styles.emptyText}>
-              No categories found. Add some categories first!
+              Brak kategorii do wyświetlenia.
             </Text>
           }
         />
       )}
-      <MenuButton
+      <ButtonComponent
         title={
           areAllCategoriesSelected ? 'Odznacz wszystkie' : 'Zaznacz wszystkie'
         }
@@ -110,7 +111,7 @@ export default function CategoriesScreen() {
         onPress={() => toggleAllCategories(!areAllCategoriesSelected)}
       />
       <View style={styles.buttonContainer}>
-        <MenuButton
+        <ButtonComponent
           title='Zapisz'
           onPress={() => router.back()}
           iconName='content-save'
@@ -131,7 +132,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 20,
     marginTop: 60,
-    color: '#f4511e',
+    color: Colors.primary,
   },
   listContent: {
     paddingVertical: ITEM_SPACING,

@@ -1,4 +1,3 @@
-// screens/PlayersSelectionScreen.tsx
 import React, { useCallback, useMemo } from 'react';
 import {
   View,
@@ -14,6 +13,7 @@ import { useGameStore } from '@/stores/gameStore';
 import ButtonComponent from '@/components/ButtonComponent';
 import PlayerInput from '@/components/PlayerInput';
 import PlayersList from '@/components/PlayerList';
+import { Colors } from '@/constants/Colors';
 // Constants
 const MAX_PLAYERS = 19;
 const MIN_PLAYERS = 2;
@@ -47,13 +47,13 @@ export default function PlayersSelectionScreen() {
     if (players.length < MIN_PLAYERS) {
       Alert.alert(
         'Za mało graczy',
-        `Dodaj conajmniej ${MIN_PLAYERS} graczy, aby wystartować grę.`,
+        `Dodaj co najmniej ${MIN_PLAYERS} graczy, aby wystartować grę.`,
       );
       return;
     }
 
     if (!areCategoriesSelected()) {
-      Alert.alert('Nie wybrano Kategorii');
+      Alert.alert('Nie wybrano kategorii');
       return;
     }
 
@@ -65,7 +65,7 @@ export default function PlayersSelectionScreen() {
       'Zresetuj Wyniki',
       'To zresetuje punktację. Nie będzie można tego cofnąć.',
       [
-        { text: 'anuluj', style: 'cancel' },
+        { text: 'Anuluj', style: 'cancel' },
         {
           text: 'Reset',
           style: 'destructive',
@@ -158,7 +158,7 @@ export default function PlayersSelectionScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.white,
   },
   container: {
     flex: 1,
@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#f4511e',
+    color: Colors.primary,
   },
   bottomActions: {
     flexDirection: 'column',
@@ -179,6 +179,6 @@ const styles = StyleSheet.create({
     marginVertical: 20,
     paddingTop: 20,
     borderTopWidth: 1,
-    borderTopColor: '#E0E0E0',
+    borderTopColor: Colors.border,
   },
 });

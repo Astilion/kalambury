@@ -44,7 +44,6 @@ export const useGameStore = create<GameState>()(
       activePlayer: 0,
       isLoading: false,
       wordChangesRemaining: 3,
-      // Initialize new state variables
       categoryOptions: [],
       selectedCategoryId: null,
       adsEnabled: true,
@@ -189,7 +188,7 @@ export const useGameStore = create<GameState>()(
         return false;
       },
 
-      // Updated to use the selected category when changing word
+      // Draws a new word from the category chosen for this round
       changeWord: async () => {
         const state = get();
 
@@ -352,7 +351,6 @@ export const useGameStore = create<GameState>()(
               ? 0
               : state.activePlayer,
         })),
-      // Updated resetScores function - makes sure to reset all player scores to 0
       resetScores: () =>
         set((state) => ({
           players: state.players.map((player) => ({ ...player, score: 0 })),

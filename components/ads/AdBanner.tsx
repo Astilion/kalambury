@@ -1,28 +1,21 @@
 import React from 'react';
-import { View, StyleSheet, Text, Platform } from 'react-native';
+import { View, StyleSheet, Text } from 'react-native';
 import { useGameStore } from '@/stores/gameStore';
+import { Colors } from '@/constants/Colors';
 
-let BannerAd: any = null;
-let BannerAdSize: any = null;
-let mobileAds: any = null;
+type GoogleMobileAdsModule = typeof import('react-native-google-mobile-ads');
+
+let BannerAd: GoogleMobileAdsModule['BannerAd'] | null = null;
+let BannerAdSize: GoogleMobileAdsModule['BannerAdSize'] | null = null;
 let isGoogleAdsAvailable = false;
 
 try {
-  // Try to import the module
-  const GoogleMobileAds = require('react-native-google-mobile-ads');
+  // The native module is missing in Expo Go, so require it lazily
+  const GoogleMobileAds: GoogleMobileAdsModule = require('react-native-google-mobile-ads');
   BannerAd = GoogleMobileAds.BannerAd;
   BannerAdSize = GoogleMobileAds.BannerAdSize;
-  mobileAds = GoogleMobileAds.default;
-
-  // Additional check to see if the native module is actually available
-  if (BannerAd && BannerAdSize && mobileAds) {
-    isGoogleAdsAvailable = true;
-  }
-} catch (error) {
-  console.log(
-    'Google Mobile Ads not available:',
-    error instanceof Error ? error.message : String(error),
-  );
+  isGoogleAdsAvailable = Boolean(BannerAd && BannerAdSize);
+} catch {
   isGoogleAdsAvailable = false;
 }
 
@@ -62,14 +55,8 @@ const AdBanner: React.FC = () => {
         requestOptions={{
           requestNonPersonalizedAdsOnly: true,
         }}
-        onAdLoaded={() => {
-          console.log('Banner ad loaded successfully');
-        }}
-        onAdFailedToLoad={(error: unknown) => {
-          console.log(
-            'Banner ad failed to load:',
-            error instanceof Error ? error.message : String(error),
-          );
+        onAdFailedToLoad={(error: Error) => {
+          console.warn('Banner ad failed to load:', error.message);
         }}
       />
     </View>
@@ -91,7 +78,7 @@ const styles = StyleSheet.create({
     height: 50,
     backgroundColor: '#e3f2fd',
     borderWidth: 2,
-    borderColor: '#2196f3',
+    borderColor: Colors.info,
     borderStyle: 'dashed',
     borderRadius: 8,
     justifyContent: 'center',
@@ -105,7 +92,7 @@ const styles = StyleSheet.create({
   },
   placeholderSubText: {
     fontSize: 10,
-    color: '#666',
+    color: Colors.textSecondary,
   },
 });
 

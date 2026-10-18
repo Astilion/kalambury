@@ -3,18 +3,17 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import { createTables, initializeDefaultData } from '@/utils/db';
 
-let mobileAds: any = null;
+type GoogleMobileAdsModule = typeof import('react-native-google-mobile-ads');
+
+let mobileAds: GoogleMobileAdsModule['default'] | null = null;
 let isGoogleAdsAvailable = false;
 
 try {
-  const GoogleMobileAds = require('react-native-google-mobile-ads');
+  // The native module is missing in Expo Go, so require it lazily
+  const GoogleMobileAds: GoogleMobileAdsModule = require('react-native-google-mobile-ads');
   mobileAds = GoogleMobileAds.default;
   isGoogleAdsAvailable = true;
 } catch (error) {
-  console.log(
-    'Google Mobile Ads not available in RootLayout:',
-    error instanceof Error ? error.message : String(error),
-  );
   isGoogleAdsAvailable = false;
 }
 
@@ -24,7 +23,6 @@ export default function RootLayout() {
       try {
         await createTables();
         await initializeDefaultData();
-        console.log('Database initialized successfully');
       } catch (error) {
         console.error('Error initializing database:', error);
       }
@@ -32,15 +30,11 @@ export default function RootLayout() {
 
     const initAds = async () => {
       if (!isGoogleAdsAvailable || !mobileAds) {
-        console.log(
-          'Skipping Google Mobile Ads initialization - module not available',
-        );
         return;
       }
 
       try {
-        const adapterStatuses = await mobileAds().initialize();
-        console.log('Google Mobile Ads initialized:', adapterStatuses);
+        await mobileAds().initialize();
       } catch (error) {
         console.error('Error initializing Google Mobile Ads:', error);
       }

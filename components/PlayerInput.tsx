@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Player } from '@/types';
+import { Colors } from '@/constants/Colors';
 
 interface PlayerInputProps {
   onAddPlayer: (name: string) => void;
@@ -29,15 +30,15 @@ export default function PlayerInput({
       const trimmedName = name.trim();
 
       if (!trimmedName) {
-        return 'Player name cannot be empty';
+        return 'Imię gracza nie może być puste';
       }
 
       if (trimmedName.length < 2) {
-        return 'Player name must be at least 2 characters long';
+        return 'Imię gracza musi mieć co najmniej 2 znaki';
       }
 
       if (trimmedName.length > 20) {
-        return 'Player name must be less than 20 characters';
+        return 'Imię gracza może mieć maksymalnie 20 znaków';
       }
 
       if (
@@ -45,7 +46,7 @@ export default function PlayerInput({
           (player) => player.name.toLowerCase() === trimmedName.toLowerCase(),
         )
       ) {
-        return 'Player with this name already exists';
+        return 'Gracz o tym imieniu już istnieje';
       }
 
       return null;
@@ -55,13 +56,13 @@ export default function PlayerInput({
 
   const handleAddPlayer = useCallback(() => {
     if (existingPlayers.length >= maxPlayers) {
-      Alert.alert('Player Limit', `Maximum ${maxPlayers} players allowed.`);
+      Alert.alert('Limit graczy', `Maksymalna liczba graczy: ${maxPlayers}.`);
       return;
     }
 
     const validationError = validatePlayerName(playerName);
     if (validationError) {
-      Alert.alert('Invalid Name', validationError);
+      Alert.alert('Nieprawidłowe imię', validationError);
       return;
     }
 
@@ -86,14 +87,14 @@ export default function PlayerInput({
           !isInputValid && playerName.trim() ? styles.inputError : null,
           disabled && styles.inputDisabled,
         ]}
-        placeholder='Enter player name'
+        placeholder='Wpisz imię gracza'
         value={playerName}
         onChangeText={setPlayerName}
         onSubmitEditing={handleAddPlayer}
         maxLength={20}
         autoCapitalize='words'
         returnKeyType='done'
-        accessibilityLabel='Player name input'
+        accessibilityLabel='Imię gracza'
         editable={!disabled}
       />
 
@@ -101,7 +102,7 @@ export default function PlayerInput({
         style={[styles.addButton, isDisabled && styles.addButtonDisabled]}
         onPress={handleAddPlayer}
         disabled={isDisabled}
-        accessibilityLabel='Add player'
+        accessibilityLabel='Dodaj gracza'
         accessibilityRole='button'
       >
         <MaterialCommunityIcons
@@ -132,28 +133,28 @@ const styles = StyleSheet.create({
     backgroundColor: '#FAFAFA',
   },
   inputError: {
-    borderColor: '#F44336',
+    borderColor: Colors.danger,
     borderWidth: 2,
   },
   inputDisabled: {
     backgroundColor: '#F0F0F0',
-    color: '#999',
+    color: Colors.textMuted,
   },
   addButton: {
     width: 50,
     height: 50,
-    backgroundColor: '#4CAF50',
+    backgroundColor: Colors.success,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 10,
     elevation: 2,
-    shadowColor: '#000',
+    shadowColor: Colors.black,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
   addButtonDisabled: {
-    backgroundColor: '#E0E0E0',
+    backgroundColor: Colors.border,
     elevation: 0,
     shadowOpacity: 0,
   },

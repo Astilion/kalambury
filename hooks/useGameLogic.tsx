@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useGameStore } from '@/stores/gameStore';
+import { Player } from '@/types';
 
 export interface GameState {
   showScore: boolean;
@@ -18,8 +19,8 @@ export interface GameActions {
   handleReturnToMainMenu: () => void;
   handlePlayerScored: (playerId: string) => void;
   handleNoOneScored: () => void;
-  getCurrentPlayer: () => any | null;
-  getSortedPlayersByScore: () => any[];
+  getCurrentPlayer: () => Player | null;
+  getSortedPlayersByScore: () => Player[];
 }
 
 export const useGameLogic = (): [GameState, GameActions] => {
@@ -123,10 +124,7 @@ export const useGameLogic = (): [GameState, GameActions] => {
     setCategorySelectionStep(true);
   };
 
-  const getCurrentPlayer = () => {
-    if (players.length === 0) return null;
-    return players[activePlayer];
-  };
+  const getCurrentPlayer = () => players[activePlayer] ?? null;
 
   const getSortedPlayersByScore = () => {
     return [...players].sort((a, b) => b.score - a.score);

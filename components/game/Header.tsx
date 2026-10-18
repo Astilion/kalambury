@@ -1,7 +1,7 @@
-// components/game/Header.js
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Player } from '@/types';
+import { Colors } from '@/constants/Colors';
 
 interface HeaderProps {
   title: string;
@@ -29,15 +29,15 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#f4511e',
+    color: Colors.primary,
     marginBottom: 10,
   },
   currentPlayer: {
     fontSize: 18,
-    color: '#666',
+    color: Colors.textSecondary,
   },
   playerName: {
     fontWeight: 'bold',
-    color: '#4CAF50',
+    color: Colors.success,
   },
 });
