@@ -8,11 +8,16 @@ Players take turns acting out a phrase while the others try to guess it – the 
 > The app's interface and phrase database are in Polish.
 
 <p align="center">
-  <img src="docs/screenshots/homepage.png" width="180" alt="Home screen" />
-  <img src="docs/screenshots/players.png" width="180" alt="Player selection" />
-  <img src="docs/screenshots/categories.png" width="180" alt="Category selection" />
-  <img src="docs/screenshots/game.png" width="180" alt="Game round" />
-  <img src="docs/screenshots/quickgame.png" width="180" alt="Quick game" />
+  <img src="docs/screenshots/homepage.png" width="260" alt="Home screen" />
+  &nbsp;&nbsp;
+  <img src="docs/screenshots/game.png" width="260" alt="Game round" />
+</p>
+<p align="center">
+  <img src="docs/screenshots/players.png" width="200" alt="Player selection" />
+  &nbsp;
+  <img src="docs/screenshots/categories.png" width="200" alt="Category selection" />
+  &nbsp;
+  <img src="docs/screenshots/quickgame.png" width="200" alt="Quick game" />
 </p>
 
 ## Features
